@@ -8,15 +8,15 @@ import pkg_resources
 from flask import Flask, jsonify, request
 from toolz.curried import map, pipe, unique
 
-from calculateur_impots import core
-from calculateur_impots.generated import formulas, verifs
+from calculette_impots import core
+from calculette_impots.generated import formulas, verifs
 
 
 app = Flask(__name__)
 
 
 def load_errors_definitions():
-    m_language_parser_dir_path = pkg_resources.get_distribution('m_language_parser').location
+    m_language_parser_dir_path = pkg_resources.get_distribution('calculette_impots_m_language_parser').location
     errors_definitions_file_path = os.path.join(m_language_parser_dir_path, 'json', 'ast', 'errH.json')
     with open(errors_definitions_file_path) as errors_definitions_file:
         errors_definitions_str = errors_definitions_file.read()
