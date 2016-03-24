@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 
+from collections import defaultdict
 import json
 import os
 import pkg_resources
 
 from flask import Flask, jsonify, request
-from toolz.curried import map, pipe, unique
+from toolz.curried import map, pipe, unique, valfilter
 
 from calculette_impots import core
 from calculette_impots.generated import formulas, verifs
@@ -41,11 +42,33 @@ def calculate():
             saisie_variables = json.loads(saisies_arg)
         except ValueError:
             return jsonify({'errors': ['"saisies" GET parameter must contain a valid JSON.']})
-    response_json = {}
+
+    wrong_saisie_variable_names = list(filter(
+        lambda variable_name: core.get_variable_type(variable_name) != 'variable_saisie',
+        saisie_variables.keys(),
+        ))
+    if wrong_saisie_variable_names:
+        return jsonify({'errors': [
+            '"saisies" GET parameter contains the variable "{}" which is not a "saisie" variable.'.format(variable_name)
+            for variable_name in wrong_saisie_variable_names
+            ]})
+
+    warning_messages_by_section = defaultdict(list)
+
+    if calculees_arg is None:
+        calculee_variable_names = core.find_restituee_variables()
+    else:
+        calculee_variable_names = calculees_arg
+        for calculee_variable_name in calculee_variable_names:
+            if not core.is_restituee_variable(calculee_variable_name):
+                warning_messages_by_section['saisies'].append(
+                    'Variable "{}" is not a variable of type "calculee restituee"'.format(calculee_variable_name)
+                    )
+
     if 'V_ANREV' not in saisie_variables:
-        response_json['warnings'] = [
-            'V_ANREV should be given as a "saisie" variable. Hint: saisies={"V_ANREV":2014}.',
-            ]
+        warning_messages_by_section['saisies'].append(
+            'V_ANREV should be given as a "saisie" variable. Hint: saisies={"V_ANREV":2014}.'
+            )
 
     # Load formula functions with a new cache for each HTTP request
 
@@ -64,30 +87,21 @@ def calculate():
     if errors is not None:
         errors_definitions = load_errors_definitions()
         definition_by_error_name = pipe(errors_definitions, map(lambda d: (d['name'], d)), dict)
-        response_json['verif_errors'] = [
-            (
-                error,
-                definition_by_error_name.get(error, {}).get('description'),
-                )
+        warning_messages_by_section['verif_errors'] = [
+            (error, definition_by_error_name.get(error, {}).get('description'))
             for error in unique(errors)  # Keep order
             ]
 
     # Calculate results
 
-    restituee_variables = core.find_restituee_variables()
-    calculee_variables = calculees_arg or restituee_variables
-    response_json['results'] = {
-        calculee_variable: formulas_functions[calculee_variable]()
-        for calculee_variable in calculee_variables
+    results = {
+        calculee_variable_name: formulas_functions[calculee_variable_name]()
+        for calculee_variable_name in calculee_variable_names
         }
     if calculees_arg is None:
-        response_json['results'] = {
-            key: val
-            for key, val in response_json['results'].items()
-            if val > 0
-            }
+        results = valfilter(lambda val: val > 0, results)
 
-    return jsonify(response_json)
+    return jsonify({'results': results})
 
 
 if __name__ == '__main__':
