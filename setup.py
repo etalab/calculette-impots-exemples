@@ -23,6 +23,9 @@ setup(
     license='http://www.fsf.org/licensing/licenses/agpl-3.0.html',
     url='https://git.framasoft.org/openfisca/calculette-impots-web-api',
 
+    entry_points={
+        'console_scripts': ['calculette-impots-http-server=calculette_impots_web_api.scripts.serve:main'],
+        },
     install_requires=[
         'calculette_impots >= 0.0.0.dev0',
         'calculette_impots_m_language_parser >= 0.0.0.dev0',
