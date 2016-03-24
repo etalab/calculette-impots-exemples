@@ -6,16 +6,14 @@ import json
 import os
 import pkg_resources
 
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 from toolz.curried import map, pipe, unique, valfilter
 
 from calculette_impots import core
 from calculette_impots.generated import formulas, verifs
 
 
-app = Flask(__name__)
-
-
+# FIXME Use function from calculette_impots_python project.
 def load_errors_definitions():
     m_language_parser_dir_path = pkg_resources.get_distribution('calculette_impots_m_language_parser').location
     errors_definitions_file_path = os.path.join(m_language_parser_dir_path, 'json', 'ast', 'errH.json')
@@ -25,12 +23,6 @@ def load_errors_definitions():
     return errors_definitions
 
 
-@app.route('/')
-def index():
-    return jsonify(message='Hello, this is "calculette-impots-web-api". Hint: use /api/1/calculate endpoint.')
-
-
-@app.route('/api/1/calculate')
 def calculate():
     # Validate inputs
 
@@ -102,7 +94,3 @@ def calculate():
         results = valfilter(lambda val: val > 0, results)
 
     return jsonify({'results': results})
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
