@@ -81,4 +81,10 @@ def calculate_controller():
     if calculees_arg is None:
         results = valfilter(lambda val: val > 0, results)
 
-    return jsonify({'results': results, 'warnings': warning_messages_by_section})
+    return jsonify(valfilter(
+        lambda val: val is not None,
+        {
+            'calculate_results': results,
+            'warnings': warning_messages_by_section or None,
+            },
+        ))
