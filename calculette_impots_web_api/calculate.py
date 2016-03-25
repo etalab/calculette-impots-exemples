@@ -12,7 +12,6 @@ from . import state
 
 
 def calculate_controller():
-
     # Validate inputs
 
     calculees_arg = request.args.getlist('calculee') or None
