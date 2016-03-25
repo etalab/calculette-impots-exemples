@@ -7,6 +7,7 @@ import json
 from calculette_impots.generated import formulas, verifs
 from flask import jsonify, request
 from toolz.curried import unique, valfilter
+from werkzeug.exceptions import BadRequest
 
 from . import state
 
@@ -21,17 +22,17 @@ def calculate_controller():
         try:
             saisie_variables = json.loads(saisies_arg)
         except ValueError:
-            return jsonify({'errors': ['"saisies" GET parameter must contain a valid JSON.']})
+            raise BadRequest('"saisies" GET parameter must contain a valid JSON.')
 
     wrong_saisie_variable_names = list(filter(
         lambda variable_name: state.variables_definitions.get_type(variable_name) != 'variable_saisie',
         saisie_variables.keys(),
         ))
     if wrong_saisie_variable_names:
-        return jsonify({'errors': [
+        raise BadRequest([
             '"saisies" GET parameter contains the variable "{}" which is not a "saisie" variable.'.format(variable_name)
             for variable_name in wrong_saisie_variable_names
-            ]})
+            ])
 
     warning_messages_by_section = defaultdict(list)
 

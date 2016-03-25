@@ -7,7 +7,7 @@ from calculette_impots_web_api import application
 
 
 def main():
-    app = application.create_application()
+    app = application.make_app()
     app.run(debug=True)
 
 
