@@ -16,10 +16,19 @@ un [`virtualenv`](https://virtualenv.readthedocs.org/en/latest/) s'il le souhait
 ## Démarrer le serveur
 
 ```
-python3 calculette_impots_web_api/serve.py
+calculette-impots-http-server
 ```
 
-## Appel de l'API Web
+## Utilisation
+
+L'API web peut être appelée depuis le navigateur, depuis un outil en ligne de commande comme
+[`curl`](https://curl.haxx.se/) ou bien depuis le langage JavaScript via une requête AJAX.
+
+L'API fournit différentes URLs :
+
+- `/api/1/calculate`
+- `/api/1/variables`
+- `/api/1/variable/<name>`
 
 Exemple d'URL :
 
