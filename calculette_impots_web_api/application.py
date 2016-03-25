@@ -17,7 +17,7 @@ def make_app():
 
     app.route('/api/1/calculate')(calculate.calculate_controller)
 
-    app.route('/api/1/variable/<name>')(variables.variable_controller)
+    app.route('/api/1/variable/<variable_name>')(variables.variable_controller)
     app.route('/api/1/variables')(variables.variables_controller)
 
     return app
