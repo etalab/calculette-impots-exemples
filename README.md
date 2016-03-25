@@ -40,7 +40,7 @@ http://localhost:5000/api/1/variables
 
 > Attention : comme beaucoup de données sont renvoyées par le serveur, votre navigateur peut avoir du mal à tout afficher.
 
-### `/api/1/variable/<name>` : afficher les informations sur une variable
+### `/api/1/variables/<name>` : afficher les informations sur une variable
 
 Exemple :
 http://localhost:5000/api/1/variable/TSHALLOV
