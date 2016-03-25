@@ -26,15 +26,30 @@ L'API web peut être appelée depuis le navigateur, depuis un outil en ligne de 
 
 L'API fournit différentes URLs :
 
-- `/api/1/calculate`
-- `/api/1/variables`
-- `/api/1/variable/<name>`
+- `/api/1/calculate` : calculer un cas-type
 
-Exemple d'URL :
+  Exemple :
+  http://localhost:5000/api/1/calculate?calculee=IINET&saisies={%22V_ANREV%22:2014,%22TSHALLOV%22:30000,%22V_0DA%22:1980}
 
-http://localhost:5000/api/1/calculate?calculee=IINET&saisies={%22V_ANREV%22:2014,%22TSHALLOV%22:30000,%22V_0DA%22:1980}
+  > Les ``%22` représentent des guillemets (`"`) url-encodés.
 
-> Les ``%22` représentent des guillemets (`"`) url-encodés.
+- `/api/1/variables` : lister toutes les variables connues
+
+  Exemple :
+  http://localhost:5000/api/1/variables
+
+  > Attention : comme beaucoup de données sont renvoyées par le serveur, votre navigateur peut avoir du mal à tout afficher.
+
+- `/api/1/variable/<name>` : afficher les informations sur une variable
+
+  Exemple :
+  http://localhost:5000/api/1/variable/TSHALLOV
+
+## Cas-types
+
+TODO
+
+Voir les cas-types documentés dans le projet [calculette-impots-python](https://git.framasoft.org/openfisca/calculette-impots-python).
 
 ## Qualité du code
 
