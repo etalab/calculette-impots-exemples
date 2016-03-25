@@ -3,27 +3,16 @@
 
 from collections import defaultdict
 import json
-import os
-import pkg_resources
 
-from flask import jsonify, request
-from toolz.curried import map, pipe, unique, valfilter
-
-from calculette_impots import core
 from calculette_impots.generated import formulas, verifs
+from flask import jsonify, request
+from toolz.curried import unique, valfilter
+
+from . import state
 
 
-# FIXME Use function from calculette_impots_python project.
-def load_errors_definitions():
-    m_language_parser_dir_path = pkg_resources.get_distribution('calculette_impots_m_language_parser').location
-    errors_definitions_file_path = os.path.join(m_language_parser_dir_path, 'json', 'ast', 'errH.json')
-    with open(errors_definitions_file_path) as errors_definitions_file:
-        errors_definitions_str = errors_definitions_file.read()
-    errors_definitions = json.loads(errors_definitions_str)
-    return errors_definitions
+def calculate_controller():
 
-
-def calculate():
     # Validate inputs
 
     calculees_arg = request.args.getlist('calculee') or None
@@ -36,7 +25,7 @@ def calculate():
             return jsonify({'errors': ['"saisies" GET parameter must contain a valid JSON.']})
 
     wrong_saisie_variable_names = list(filter(
-        lambda variable_name: core.get_variable_type(variable_name) != 'variable_saisie',
+        lambda variable_name: state.variables_definitions.get_type(variable_name) != 'variable_saisie',
         saisie_variables.keys(),
         ))
     if wrong_saisie_variable_names:
@@ -48,11 +37,11 @@ def calculate():
     warning_messages_by_section = defaultdict(list)
 
     if calculees_arg is None:
-        calculee_variable_names = core.find_restituee_variables()
+        calculee_variable_names = state.variables_definitions.filter_by_subtype('restituee')
     else:
         calculee_variable_names = calculees_arg
         for calculee_variable_name in calculee_variable_names:
-            if not core.is_restituee_variable(calculee_variable_name):
+            if not state.variables_definitions.has_subtype(calculee_variable_name, 'restituee'):
                 warning_messages_by_section['saisies'].append(
                     'Variable "{}" is not a variable of type "calculee restituee"'.format(calculee_variable_name)
                     )
@@ -67,6 +56,7 @@ def calculate():
     result_by_formula_name_cache = {}
     formulas_functions = formulas.get_formulas(
         cache=result_by_formula_name_cache,
+        constants=state.constants,
         saisie_variables=saisie_variables,
         )
 
@@ -77,10 +67,8 @@ def calculate():
         saisie_variables=saisie_variables,
         )
     if errors is not None:
-        errors_definitions = load_errors_definitions()
-        definition_by_error_name = pipe(errors_definitions, map(lambda d: (d['name'], d)), dict)
         warning_messages_by_section['verif_errors'] = [
-            (error, definition_by_error_name.get(error, {}).get('description'))
+            (error, state.definition_by_error_name.get(error, {}).get('description'))
             for error in unique(errors)  # Keep order
             ]
 
@@ -93,4 +81,4 @@ def calculate():
     if calculees_arg is None:
         results = valfilter(lambda val: val > 0, results)
 
-    return jsonify({'results': results})
+    return jsonify({'results': results, 'warnings': warning_messages_by_section})
