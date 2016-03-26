@@ -9,7 +9,7 @@ from . import calculate, variables
 
 
 def make_app():
-    app = make_json_app('calculette-impots-web-api')
+    app = make_json_app('calculette_impots_web_api')
 
     @app.route('/')
     def index_controller():
