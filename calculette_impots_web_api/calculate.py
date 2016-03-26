@@ -79,7 +79,7 @@ def calculate_controller():
         for calculee_variable_name in calculee_variable_names
         }
     if calculees_arg is None:
-        results = valfilter(lambda val: val > 0, results)
+        results = valfilter(lambda val: val != 0, results)
 
     return jsonify(valfilter(
         lambda val: val is not None,
