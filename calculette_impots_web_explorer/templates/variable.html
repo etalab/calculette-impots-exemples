@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block title %}Variable {{ variable.name}}{% endblock %}
+{% block content %}
+  {% if input_error_by_name %}
+    <h3>Erreurs</h3>
+    <ul>
+      {% for name, error in input_error_by_name.items() %}
+        <li>
+          {{ name }} : {{ error }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <h1>Variable {{ variable.name}}</h1>
+  {% if variable.dependencies %}
+    <h3>Entrées</h3>
+    <ul>
+      {% for input_name in variable.dependencies %}
+        <li>
+          <a href="{{ url_for('variable', variable_name=input_name, historique=history_str,
+              **saisie_variable_input_by_name) }}">
+            {{ input_name }}
+          </a>
+          {{ variable_value_by_name.get(input_name) }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% if variable.type == 'variable_saisie' %}
+    <h2>Variable saisie</h2>
+    <form action="{{ url_for('variable', historique=history_str, variable_name=variable.name) }}" method="get">
+      {% for name, value in saisie_variable_input_by_name.items() %}
+        {% if name != variable.name %}
+          <input name="{{ name }}" type="hidden" value="{{ value }}">
+        {% endif %}
+      {% endfor %}
+      <input name="historique" type="hidden" value="{{ history_str }}">
+      {{ variable.name }}
+      <input name="{{ variable.name }}" type="number" value="{{ saisie_variable_input_by_name.get(variable.name, '') }}">
+      <input type="submit" value="OK">
+    </form>
+  {% else %}
+    Valeur : {{ variable_value_by_name.get(variable.name, '') }}
+  {% endif %}
+  {% if variable.reverse_dependencies %}
+    <h3>Sorties</h3>
+    <ul>
+      {% for output_name in variable.reverse_dependencies %}
+        <li>
+          <a href="{{ url_for('variable', variable_name=output_name, historique=history_str,
+              **saisie_variable_input_by_name) }}">
+            {{ output_name }}
+          </a>
+          {{ variable_value_by_name.get(output_name) }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% if history|length > 1 %}
+    <h3>Historique</h3>
+    <a href="{{ url_for('variable', variable_name=variable.name, **saisie_variable_input_by_name) }}">Effacer</a>
+    <ul>
+      {% for history_name in history %}
+        {% if history_name != variable.name %}
+          <li>
+            <a href="{{ url_for('variable', variable_name=history_name, historique=history_str,
+                **saisie_variable_input_by_name) }}">
+              {{ history_name }}
+            </a>
+            {{ variable_value_by_name.get(history_name) }}
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <pre>{{ variable|pprint }}</pre>
+  <pre>{{ request.args|pprint }}</pre>
+{% endblock %}

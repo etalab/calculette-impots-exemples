@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Explorateur de la calculette impôts</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% endblock %}
+  </head>
+  <body>
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+      {% block footer %}
+      Copyright &copy; 2016 by <a href="http://www.openfisca.fr/">OpenFisca</a>.
+      {% endblock %}
+    </div>
+  </body>
+</html>

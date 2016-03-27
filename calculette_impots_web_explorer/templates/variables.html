@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block title %}Formules{% endblock %}
+{% block content %}
+  <h1>Formules</h1>
+  <ul>
+    {% for variable_name in variables_name %}
+      <li><a href="{{ url_for('variable', variable_name=variable_name) }}">{{variable_name}}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}
