@@ -25,7 +25,11 @@ def variable(variable_name):
     history_input = request.args.get('historique') or ''
     history = list(unique(concatv(
         [variable_name],
-        filter(lambda name: name, map(lambda name: name.strip(), history_input.split(','))),
+        filter(
+            lambda name: name and (name in state.variables_definitions.definition_by_variable_name or
+                name in state.constants),
+            map(lambda name: name.strip(), history_input.split('|')),
+            ),
         )))
 
     saisie_variable_input_by_name = {}
@@ -102,7 +106,7 @@ def variable(variable_name):
     return render_template(
         'variable.html',
         history = history,
-        history_str = ','.join(history),
+        history_str = '|'.join(history),
         input_error_by_name=OrderedDict(sorted(input_error_by_name.items())),
         saisie_variable_input_by_name=saisie_variable_input_by_name,
         variable=variable,
