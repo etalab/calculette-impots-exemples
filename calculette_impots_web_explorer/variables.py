@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
-from urllib.parse import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    # Python 2
+    from urlparse import urlparse
 
 from calculette_impots.generated import formulas  # , verifs
 from flask import jsonify, render_template, request, url_for
