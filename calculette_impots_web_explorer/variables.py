@@ -43,17 +43,17 @@ def oembed():
 
     format = request.args.get('format')
     if format not in (None, '', 'json'):
-        raise NotImplemented("Le format {!r} n'est pas supporté.".format(format))
+        raise NotImplemented(u"Le format {!r} n'est pas supporté.".format(format))
     maxheight = request.args.get('maxheight', -1, int)
     maxwidth = request.args.get('maxwidth', -1, int)
     url = request.args.get('url')
     if not url:
-        raise NotFound("Le paramètre 'url' est requis.")
+        raise NotFound(u"Le paramètre 'url' est requis.")
     parsed_url = urlparse(url)
     variable_name = parsed_url.path.strip('/').split('/')[0]
     variable = build_variable(variable_name)
     if variable is None:
-        raise NotFound("La variable {!r} n'est pas définie.".format(variable_name))
+        raise NotFound(u"La variable {!r} n'est pas définie.".format(variable_name))
 
     return jsonify(dict(
         height=min(600, maxheight) if maxheight > 0 else 600,
@@ -75,7 +75,7 @@ def variable(variable_name):
 
     variable = build_variable(variable_name)
     if variable is None:
-        raise NotFound("La variable {!r} n'est pas définie.".format(variable_name))
+        raise NotFound(u"La variable {!r} n'est pas définie.".format(variable_name))
 
     input_error_by_name = {}
 
@@ -96,14 +96,14 @@ def variable(variable_name):
         if state.variables_definitions.is_saisie(name) and value:
             saisie_variable_input_by_name[name] = value
         else:
-            input_error_by_name[name] = "L'argument {!r} n'est pas une variable de saisie.".format(name)
+            input_error_by_name[name] = u"L'argument {!r} n'est pas une variable de saisie.".format(name)
 
     saisie_variable_value_by_name = {}
     for name, input in saisie_variable_input_by_name.items():
         try:
             saisie_variable_value_by_name[name] = float(input)
         except ValueError:
-            input_error_by_name[name] = "La valeur {!r} n'est pas un nombre.".format(input)
+            input_error_by_name[name] = u"La valeur {!r} n'est pas un nombre.".format(input)
 
     # Varify input variables & calculate formulas.
 
