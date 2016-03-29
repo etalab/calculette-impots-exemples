@@ -61,8 +61,11 @@ def variable(variable_name):
     for name, value in request.args.items():
         if name == 'historique':
             continue
-        if state.variables_definitions.is_saisie(name) and value:
-            saisie_variable_input_by_name[name] = value
+        if state.variables_definitions.is_saisie(name):
+            if value:
+                saisie_variable_input_by_name[name] = value
+            else:
+                input_error_by_name[name] = u"L'argument {!r} n'a pas de valeur.".format(name)
         else:
             input_error_by_name[name] = u"L'argument {!r} n'est pas une variable de saisie.".format(name)
 
