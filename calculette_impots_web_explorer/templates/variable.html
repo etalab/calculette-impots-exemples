@@ -12,21 +12,6 @@
   {% endif %}
 {%- endmacro %}
 
-{% block head %}
-  {{ super() }}
-  <link
-    href="{{ url_for(
-      'oembed',
-      _external = True,
-      format='json',
-      url=url_for('variable', _external = True, variable_name=variable.name),
-      ) }}"
-    rel="alternate"
-    title="Profil oEmbed de la variable {{ variable.name }}"
-    type="application/json+oembed"
-  >
-{% endblock %}
-
 {% block title %}Variable {{ variable.name}}{% endblock %}
 
 {% block content %}

@@ -38,38 +38,6 @@ def build_variable(variable_name):
     return variable
 
 
-def oembed():
-    # cf http://oembed.com/
-
-    format = request.args.get('format')
-    if format not in (None, '', 'json'):
-        raise NotImplemented(u"Le format {!r} n'est pas supporté.".format(format))
-    maxheight = request.args.get('maxheight', -1, int)
-    maxwidth = request.args.get('maxwidth', -1, int)
-    url = request.args.get('url')
-    if not url:
-        raise NotFound(u"Le paramètre 'url' est requis.")
-    parsed_url = urlparse(url)
-    variable_name = parsed_url.path.strip('/').split('/')[0]
-    variable = build_variable(variable_name)
-    if variable is None:
-        raise NotFound(u"La variable {!r} n'est pas définie.".format(variable_name))
-
-    return jsonify(dict(
-        height=min(600, maxheight) if maxheight > 0 else 600,
-        html=render_template(
-            'variable-oembed.html',
-            variable=variable,
-            ),
-        provider_name='Explorateur des variables de la calculette impôts',
-        provider_url=url_for('variables', _external=True),
-        title=variable['name'],
-        type='rich',
-        version='1.0',
-        width=min(200, maxwidth) if maxwidth > 0 else 200,
-        ))
-
-
 def variable(variable_name):
     # Process controller arguments.
 
