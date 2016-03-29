@@ -11,4 +11,4 @@ from calculette_impots.variables_definitions import VariablesDefinitions
 constants = loaders.load_constants()
 definition_by_error_name = loaders.load_errors_definitions()
 dependencies_by_formula_name = loaders.load_formulas_dependencies()
-variables_definitions = VariablesDefinitions(constants=constants)
+variables_definitions = VariablesDefinitions()
