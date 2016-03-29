@@ -24,7 +24,7 @@ setup(
     url='https://git.framasoft.org/openfisca/calculette-impots-web-api',
 
     entry_points={
-        'console_scripts': ['calculette-impots-http-server=calculette_impots_web_api.scripts.serve:main'],
+        'console_scripts': ['calculette-impots-web-api=calculette_impots_web_api.scripts.serve:main'],
         },
     install_requires=[
         'calculette_impots >= 0.0.0.dev0',
