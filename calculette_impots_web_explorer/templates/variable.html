@@ -30,7 +30,7 @@
   {% endif %}
   <h1>Variable {{ variable.name}}</h1>
   {% if variable.dependencies %}
-    <h3>Entrées</h3>
+    <h3>Variables utilisées par {{ variable.name }}</h3>
     <ul>
       {% for input_name in variable.dependencies %}
         <li>
@@ -60,7 +60,7 @@
     Valeur : {{ variable_value_by_name.get(variable.name, '') }}
   {% endif %}
   {% if variable.reverse_dependencies %}
-    <h3>Sorties</h3>
+    <h3>Formules utilisant {{ variable.name }}</h3>
     <ul>
       {% for output_name in variable.reverse_dependencies %}
         <li>
