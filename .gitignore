@@ -1,2 +1,3 @@
 src/config.ini
 *.pyc
+.ipynb_checkpoints
