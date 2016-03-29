@@ -20,7 +20,7 @@ def build_variable(variable_name):
     if variable_definition is None:
         if variable_name not in state.constants:
             return None
-        variable_definition = dict(name = variable_name)
+        variable_definition = dict(name=variable_name)
 
     variable_dependencies = sorted(state.dependencies_by_formula_name.get(variable_name) or [])
     variable_reverse_dependencies = sorted(valfilter(
@@ -84,7 +84,7 @@ def variable(variable_name):
         [variable_name],
         filter(
             lambda name: name and (name in state.variables_definitions.definition_by_variable_name or
-                name in state.constants),
+                                   name in state.constants),
             map(lambda name: name.strip(), history_input.split('|')),
             ),
         )))
@@ -147,8 +147,8 @@ def variable(variable_name):
 
     return render_template(
         'variable.html',
-        history = history,
-        history_str = '|'.join(history),
+        history=history,
+        history_str='|'.join(history),
         input_error_by_name=OrderedDict(sorted(input_error_by_name.items())),
         saisie_variable_input_by_name=saisie_variable_input_by_name,
         variable=variable,
@@ -157,5 +157,7 @@ def variable(variable_name):
 
 
 def variables():
-    return render_template('variables.html',
-        variables_name=sorted(state.variables_definitions.definition_by_variable_name))
+    return render_template(
+        'variables.html',
+        variables_name=sorted(state.variables_definitions.definition_by_variable_name),
+        )

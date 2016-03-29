@@ -19,7 +19,6 @@ un [`virtualenv`](https://virtualenv.readthedocs.org/en/latest/) s'il le souhait
 calculette-impots-web-explorer
 ```
 
-
 ## Qualité du code
 
 ```
