@@ -105,7 +105,7 @@ def variable(variable_name):
         except ValueError:
             input_error_by_name[name] = u"La valeur {!r} n'est pas un nombre.".format(input)
 
-    # Varify input variables & calculate formulas.
+    # Verify input variables & calculate formulas.
 
     function_by_name = formulas.get_formulas(
         cache={},
@@ -138,6 +138,7 @@ def variable(variable_name):
         }
 
     # Merge the values of all variables into a single dictionary.
+
     variable_value_by_name = {}
     variable_value_by_name.update(state.constants)
     variable_value_by_name.update(saisie_variable_value_by_name)
