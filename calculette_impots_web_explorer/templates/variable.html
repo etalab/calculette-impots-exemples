@@ -1,5 +1,17 @@
 {% extends "layout.html" %}
 
+{% macro render_variable_type(name, type) -%}
+  {% if type == 'variable_saisie' %}
+    Variable saisie
+  {% elif type == 'variable_calculee' %}
+    Formule
+  {% elif name in state.constants %}
+    Constante
+  {% else %}
+    Variable
+  {% endif %}
+{%- endmacro %}
+
 {% block head %}
   {{ super() }}
   <link
@@ -28,21 +40,28 @@
       {% endfor %}
     </ul>
   {% endif %}
-  <h1>Variable {{ variable.name }}</h1>
+  <h1>{{ render_variable_type(variable.name, variable.type) }} {{ variable.name }}</h1>
+  {% if variable.description %}
+    <p>{{ variable.description }}</p>
+  {% endif %}
   {% if variable.dependencies %}
     <h3>Variables utilisées par {{ variable.name }}</h3>
     <ul>
       {% for input_name in variable.dependencies %}
         <li>
+          {{ render_variable_type(input_name, state.variables_definitions.get_type(input_name)) }}
           <a href="{{ url_for('variable', variable_name=input_name, historique=history_str,
               **saisie_variable_input_by_name) }}">{{ input_name }}</a>
           {{ variable_value_by_name.get(input_name) }}
+          {% set input_description = state.variables_definitions.get_description(input_name) %}
+          {% if input_description %}
+            ({{ input_description }})
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
   {% endif %}
   {% if variable.type == 'variable_saisie' %}
-    <h2>Variable saisie</h2>
     <form action="{{ url_for('variable', historique=history_str, variable_name=variable.name) }}" method="get">
       {% for name, value in saisie_variable_input_by_name.items() %}
         {% if name != variable.name %}
@@ -54,8 +73,10 @@
       <input name="{{ variable.name }}" type="number" value="{{ saisie_variable_input_by_name.get(variable.name, '') }}">
       <input type="submit" value="OK">
     </form>
+  {% elif variable.type == 'variable_calculee' %}
+    <p>Résultat du calcul : {{ variable_value_by_name.get(variable.name, '') }}</p>
   {% else %}
-    Valeur : {{ variable_value_by_name.get(variable.name, '') }}
+    <p>Valeur : {{ variable_value_by_name.get(variable.name, '') }}</p>
   {% endif %}
   {% if variable.reverse_dependencies %}
     <h3>Formules utilisant {{ variable.name }}</h3>
@@ -65,6 +86,10 @@
           <a href="{{ url_for('variable', variable_name=output_name, historique=history_str,
               **saisie_variable_input_by_name) }}">{{ output_name }}</a>
           {{ variable_value_by_name.get(output_name) }}
+          {% set output_description = state.variables_definitions.get_description(output_name) %}
+          {% if output_description %}
+            ({{ output_description }})
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
