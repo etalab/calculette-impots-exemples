@@ -37,11 +37,11 @@ def calculate_controller():
     warning_messages_by_section = defaultdict(list)
 
     if calculees_arg is None:
-        calculee_variable_names = state.variables_definitions.filter_by_subtype('restituee')
+        calculee_variable_names = state.variables_definitions.filter_calculees(kind='restituee')
     else:
         calculee_variable_names = calculees_arg
         for calculee_variable_name in calculee_variable_names:
-            if not state.variables_definitions.has_subtype(calculee_variable_name, 'restituee'):
+            if not state.variables_definitions.is_calculee(calculee_variable_name, kind='restituee'):
                 warning_messages_by_section['saisies'].append(
                     'Variable "{}" is not a variable of type "calculee restituee"'.format(calculee_variable_name)
                     )
