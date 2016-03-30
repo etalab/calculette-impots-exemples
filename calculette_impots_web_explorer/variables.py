@@ -110,7 +110,7 @@ def variable(variable_name):
     variable_value_by_name.update(saisie_variable_value_by_name)
     variable_value_by_name.update(calculee_variable_value_by_name)
 
-    # Return rendred page.
+    # Return rendered page.
 
     return render_template(
         'variable.html',
