@@ -4,12 +4,11 @@
 
 import sys
 
-from calculette_impots_web_explorer import application
+from calculette_impots_web_explorer.application import app
 
 
 def main():
-    app = application.make_app()
-    app.run(debug=True, port=5010)
+    app.run(debug=True, port=app.config['PORT'])
 
 
 if __name__ == '__main__':

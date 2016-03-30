@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
+import os
 
 from calculette_impots.generated import formulas  # , verifs
 from flask import render_template, request
@@ -11,6 +12,8 @@ from . import state
 
 
 def build_variable(variable_name):
+    from .application import app  # Import here to avoid cyclic modules import.
+
     variable_definition = state.variables_definitions.definition_by_variable_name.get(variable_name)
     if variable_definition is None:
         if variable_name not in state.constants:
@@ -29,6 +32,27 @@ def build_variable(variable_name):
         variable['dependencies'] = variable_dependencies
     if variable_reverse_dependencies:
         variable['reverse_dependencies'] = variable_reverse_dependencies
+
+    if variable_definition['type'] == 'variable_calculee' and not variable_definition.get('base'):
+        ((startline, _), (endline, _)) = variable_definition['formula_linecol'] or \
+            variable_definition['pour_formula_linecol']
+        source_file_path = os.path.join(app.config['M_SOURCE_FILES_DIR_PATH'], variable_definition['source_file_name'])
+        with open(source_file_path) as source_file:
+            formula_source = ''.join(source_file.readlines()[startline - 1:endline]).strip()
+        for variable_dependency in variable_dependencies:
+            variable_dependency_description = state.variables_definitions.get_description(variable_dependency)
+            if variable_dependency_description is not None:
+                formula_source = formula_source.replace(
+                    variable_dependency,
+                    '<abbr title="{}">{}</abbr>'.format(variable_dependency_description, variable_dependency),
+                    )
+        variable['formula_source_html'] = formula_source
+        variable['source_file_git_url'] = '{}{}#L{}-{}'.format(
+            app.config['SOURCE_FILE_GIT_BASE_URL'],
+            variable_definition['source_file_name'],
+            startline,
+            endline,
+            )
 
     return variable
 
@@ -125,7 +149,17 @@ def variable(variable_name):
 
 
 def variables():
+    definition_by_variable_name = state.variables_definitions.definition_by_variable_name
     return render_template(
         'variables.html',
-        variables_name=sorted(state.variables_definitions.definition_by_variable_name),
+        calculee_variables=OrderedDict([
+            (variable_name, definition)
+            for variable_name, definition in sorted(definition_by_variable_name.items())
+            if definition['type'] == 'variable_calculee'
+            ]),
+        saisie_variables=OrderedDict([
+            (variable_name, definition)
+            for variable_name, definition in sorted(definition_by_variable_name.items())
+            if definition['type'] == 'variable_saisie'
+            ]),
         )

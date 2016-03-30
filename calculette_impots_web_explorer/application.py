@@ -3,13 +3,12 @@
 
 from flask import Flask
 
-from . import variables
+from . import views
 
 
-def make_app():
-    app = Flask('calculette_impots_web_explorer')
+app = Flask('calculette_impots_web_explorer', instance_relative_config=True)
 
-    app.route('/')(variables.variables)
-    app.route('/<variable_name>')(variables.variable)
+app.config.from_pyfile('config.py')
 
-    return app
+app.route('/')(views.variables)
+app.route('/<variable_name>')(views.variable)
