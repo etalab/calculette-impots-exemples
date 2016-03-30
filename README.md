@@ -13,6 +13,8 @@ pip3 install --editable . --user
 Un utilisateur plus expérimenté en Python peut utiliser
 un [`virtualenv`](https://virtualenv.readthedocs.org/en/latest/) s'il le souhaite.
 
+Mettre à jour les variables de configuration dans le fichier `instance/config.py` notamment `M_SOURCE_FILES_DIR_PATH`.
+
 ## Démarrer le serveur
 
 ```
