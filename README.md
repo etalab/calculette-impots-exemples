@@ -4,7 +4,13 @@
 
 Le langage Python 3 est utilisé.
 
+Il est nécessaire d'avoir au préalable installé le paquet [calculette-impots-python](https://git.framasoft.org/openfisca/calculette-impots-python).
+
+Ce paquet n'est pas publié sur le dépôt [PyPI](https://pypi.python.org/pypi) donc pour l'installer il faut passer par `git clone`.
+
 ```
+git clone https://git.framasoft.org/openfisca/calculette-impots-web-api.git
+cd calculette-impots-web-api
 pip3 install --editable . --user
 ```
 
@@ -16,15 +22,25 @@ un [`virtualenv`](https://virtualenv.readthedocs.org/en/latest/) s'il le souhait
 ## Démarrer le serveur
 
 ```
-calculette-impots-http-server
+calculette-impots web-api
 ```
+
+Ou en exécutant directement le script :
+
+``
+python3 calculette_impots_web_api/scripts/serve.py
+``
+
+Puis ouvrir l'URL http://localhost:5000/.
+En réalité cette URL ne sert à rien en l'état et il faut appeler un point d'entrée,
+et c'est l'objet de la section suivante.
 
 ## Utilisation
 
 L'API web peut être appelée depuis le navigateur, depuis un outil en ligne de commande comme
 [`curl`](https://curl.haxx.se/) ou bien depuis le langage JavaScript via une requête AJAX.
 
-L'API fournit différentes URLs :
+L'API fournit différents points d'entrée :
 
 ### `/api/1/calculate` : calculer un cas-type
 
@@ -46,8 +62,6 @@ Exemple :
 http://localhost:5000/api/1/variable/TSHALLOV
 
 ## Cas-types
-
-TODO
 
 Voir les cas-types documentés dans le projet [calculette-impots-python](https://git.framasoft.org/openfisca/calculette-impots-python).
 
