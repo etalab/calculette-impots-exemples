@@ -9,7 +9,7 @@ from flask import jsonify, request
 from toolz.curried import unique, valfilter
 from werkzeug.exceptions import BadRequest
 
-from . import state
+from .. import state
 
 
 def calculate_controller():

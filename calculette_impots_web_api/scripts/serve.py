@@ -4,11 +4,10 @@
 
 import sys
 
-from calculette_impots_web_api import application
+from calculette_impots_web_api.application import app
 
 
 def main():
-    app = application.make_app()
     app.run(debug=True, port=5000)
 
 

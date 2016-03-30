@@ -5,7 +5,7 @@ from flask import jsonify
 from toolz import valfilter
 from werkzeug.exceptions import NotFound
 
-from . import state
+from .. import state
 
 
 def variable_controller(variable_name):

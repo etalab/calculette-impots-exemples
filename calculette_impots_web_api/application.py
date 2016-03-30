@@ -5,22 +5,7 @@ from flask import Flask, jsonify
 from werkzeug.exceptions import default_exceptions
 from werkzeug.exceptions import HTTPException
 
-from . import calculate, variables
-
-
-def make_app():
-    app = make_json_app('calculette_impots_web_api')
-
-    @app.route('/')
-    def index_controller():
-        return jsonify({'message': 'Hello, this is "calculette-impots-web-api". Hint: use /api/1/calculate endpoint.'})
-
-    app.route('/api/1/calculate')(calculate.calculate_controller)
-
-    app.route('/api/1/variables')(variables.variables_controller)
-    app.route('/api/1/variables/<variable_name>')(variables.variable_controller)
-
-    return app
+from .views import calculate, variables
 
 
 # From http://flask.pocoo.org/snippets/83/
@@ -45,3 +30,16 @@ def make_json_app(import_name, **kwargs):
         app.error_handler_spec[None][code] = make_json_error
 
     return app
+
+
+app = make_json_app('calculette_impots_web_api')
+
+
+@app.route('/')
+def index_controller():
+    return jsonify({'message': 'Hello, this is "calculette-impots-web-api". Hint: use /api/1/calculate endpoint.'})
+
+app.route('/api/1/calculate')(calculate.calculate_controller)
+
+app.route('/api/1/variables')(variables.variables_controller)
+app.route('/api/1/variables/<variable_name>')(variables.variable_controller)
