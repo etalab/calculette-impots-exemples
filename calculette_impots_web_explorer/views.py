@@ -141,7 +141,7 @@ def variable(variable_name):
         history=history,
         history_str='-'.join(history),
         input_error_by_name=OrderedDict(sorted(input_error_by_name.items())),
-        saisie_variable_input_by_name=saisie_variable_input_by_name,
+        saisie_variable_input_by_name=OrderedDict(sorted(saisie_variable_input_by_name.items())),
         state=state,
         variable=variable,
         variable_value_by_name=variable_value_by_name,
