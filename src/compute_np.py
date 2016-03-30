@@ -4,6 +4,15 @@ Compare with http://www3.finances.gouv.fr/calcul_impot/2015/index.htm
 """
 
 import json
+import configparser
+import numpy as np
+import os
+
+from function_set_np import functions_mapping
+
+config = configparser.ConfigParser()
+config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
+n = int(config['numpy']['n'])
 
 with open('../json/computing_order.json', 'r') as f:
     computing_order = json.load(f)
@@ -31,21 +40,21 @@ alias2name = {i['alias']: i['name'] for i in input_variables}
 
 def get_value(name, input_values, computed_values):
     if name in formulas_light:
-        return computed_values[name]
+        return computed_values[name]*np.ones(n)
 
     if name in constants_light:
-        return constants_light[name]
+        return constants_light[name]*np.ones(n)
 
     if name in inputs_light:
-        return input_values[name]
+        return input_values[name]*np.ones(n)
 
     if name in unknowns_light:
-        return 0.
+        return np.zeros(n)
 
     raise Exception('Unknown variable category.')
 
 
-def prepare_std(alias_values):
+def prepare(alias_values):
     input_values = {alias2name[alias]: value for alias, value in alias_values.items()}
 
     input_values_complete = {}
@@ -58,7 +67,7 @@ def prepare_std(alias_values):
     return input_values_complete
 
 
-def compute_formula(node, input_values, computed_values, functions_mapping):
+def compute_formula(node, input_values, computed_values):
     nodetype = node['nodetype']
 
     if nodetype == 'symbol':
@@ -68,11 +77,11 @@ def compute_formula(node, input_values, computed_values, functions_mapping):
 
     if nodetype == 'float':
         value = node['value']
-        return value
+        return value*np.ones(n)
 
     if nodetype == 'call':
         name = node['name']
-        args = [compute_formula(child, input_values, computed_values, functions_mapping) for child in node['args']]
+        args = [compute_formula(child, input_values, computed_values) for child in node['args']]
         function = functions_mapping[name]
         value = function(args)
         return value
@@ -80,11 +89,11 @@ def compute_formula(node, input_values, computed_values, functions_mapping):
     raise ValueError('Unknown type : %s'%nodetype)
 
 
-def compute(input_values, functions_mapping):
+def compute(input_values):
     computed_values = {}
 
     for variable in computing_order:
         formula = formulas_light[variable]
-        computed_values[variable] = compute_formula(formula, input_values, computed_values, functions_mapping)
+        computed_values[variable] = compute_formula(formula, input_values, computed_values)
 
     return computed_values['IRN']
