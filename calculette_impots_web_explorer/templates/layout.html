@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %} - Explorateur de la calculette impôts</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+abbr[title] {
+  cursor: help;
+  border-bottom: 1px dotted #777;
+}
+    </style>
     {% endblock %}
   </head>
   <body>
