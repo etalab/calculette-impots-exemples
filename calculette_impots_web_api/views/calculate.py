@@ -12,8 +12,22 @@ from werkzeug.exceptions import BadRequest
 from .. import state
 
 
+def iter_saisie_variables_or_aliases(saisie_variables):
+    for variable_name_or_alias, value in saisie_variables.items():
+        variable_definition = state.variables_definitions.definition_by_variable_name.get(variable_name_or_alias)
+        if variable_definition is None:
+            alias_variables_definitions = list(filter(
+                lambda definition: definition.get('alias') == variable_name_or_alias,
+                state.variables_definitions.definition_by_variable_name.values(),
+                ))
+            if alias_variables_definitions:
+                yield alias_variables_definitions[0]['name'], value
+                continue
+        yield variable_name_or_alias, value
+
+
 def calculate():
-    # Validate inputs
+    # Process controller arguments.
 
     calculees_arg = request.args.getlist('calculee') or None
     saisies_arg = request.args.get('saisies')
@@ -23,6 +37,10 @@ def calculate():
             saisie_variables = json.loads(saisies_arg)
         except ValueError:
             raise BadRequest('"saisies" GET parameter must contain a valid JSON.')
+
+    # Accept aliases
+
+    saisie_variables = dict(iter_saisie_variables_or_aliases(saisie_variables))
 
     wrong_saisie_variable_names = list(filter(
         lambda variable_name: state.variables_definitions.get_type(variable_name) != 'variable_saisie',
