@@ -48,7 +48,7 @@
       <input type="submit" value="OK">
     {% elif variable.type == 'variable_calculee' and not variable.base %}
       <p style="overflow-x: auto; white-space: nowrap;">
-        <code>{{ variable.formula_source_html|safe }}</code>
+        <code style="white-space: pre;">{{ variable.formula_source_html|safe }}</code>
         <br>
         <code style="white-space: pre;">{{ variable.evaluated_formula_source_html|safe }}</code>
         <br>
