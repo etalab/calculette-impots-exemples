@@ -12,7 +12,7 @@ from werkzeug.routing import RequestRedirect
 from . import state
 
 
-def build_variable(variable_name_or_alias):
+def build_variable(variable_name_or_alias, saisie_variable_value_by_name):
     from .application import app  # Import here to avoid cyclic modules import.
 
     variable_definition = state.variables_definitions.definition_by_variable_name.get(variable_name_or_alias)
@@ -51,14 +51,23 @@ def build_variable(variable_name_or_alias):
         source_file_path = os.path.join(app.config['M_SOURCE_FILES_DIR_PATH'], variable_definition['source_file_name'])
         with open(source_file_path) as source_file:
             formula_source = ''.join(source_file.readlines()[startline - 1:endline]).strip()
-        for variable_dependency in variable_dependencies:
-            variable_dependency_description = state.variables_definitions.get_description(variable_dependency)
-            if variable_dependency_description is not None:
-                formula_source = formula_source.replace(
-                    variable_dependency,
-                    '<abbr title="{}">{}</abbr>'.format(variable_dependency_description, variable_dependency),
+        formula_source_html = formula_source
+        for dependency_name in variable_dependencies:
+            dependency_description = state.variables_definitions.get_description(dependency_name)
+            if dependency_description is not None:
+                formula_source_html = formula_source_html.replace(
+                    dependency_name,
+                    '<abbr title="{}">{}</abbr>'.format(dependency_description, dependency_name),
                     )
-        variable['formula_source_html'] = formula_source
+        variable['formula_source_html'] = formula_source_html
+        evaluated_formula_source_html = formula_source
+        for dependency_name in variable_dependencies:
+            dependency_value = saisie_variable_value_by_name.get(dependency_name, 0)
+            evaluated_formula_source_html = evaluated_formula_source_html.replace(
+                dependency_name,
+                str(dependency_value).rjust(len(dependency_name)),
+                )
+        variable['evaluated_formula_source_html'] = evaluated_formula_source_html
         variable['source_file_git_url'] = '{}{}#L{}-{}'.format(
             app.config['SOURCE_FILE_GIT_BASE_URL'],
             variable_definition['source_file_name'],
@@ -71,12 +80,6 @@ def build_variable(variable_name_or_alias):
 
 def variable(variable_name_or_alias):
     # Process controller arguments.
-
-    variable = build_variable(variable_name_or_alias)
-    if variable is None:
-        raise NotFound(u"La variable {!r} n'est pas définie.".format(variable_name_or_alias))
-
-    variable_name = variable['name']
 
     input_error_by_name = {}
 
@@ -99,9 +102,13 @@ def variable(variable_name_or_alias):
         except ValueError:
             input_error_by_name[name] = u"La valeur {!r} n'est pas un nombre.".format(input)
 
+    variable = build_variable(variable_name_or_alias, saisie_variable_value_by_name)
+    if variable is None:
+        raise NotFound(u"La variable {!r} n'est pas définie.".format(variable_name_or_alias))
+
     history_input = request.args.get('historique') or ''
     history = list(unique(concatv(
-        [variable_name],
+        [variable['name']],
         filter(
             lambda name: name and name not in saisie_variable_input_by_name and (
                 name in state.variables_definitions.definition_by_variable_name or name in state.constants),
