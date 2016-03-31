@@ -42,4 +42,4 @@ def index():
 app.route('/api/1/calculate')(calculate.calculate)
 
 app.route('/api/1/variables')(variables.variables)
-app.route('/api/1/variables/<variable_name>')(variables.variable)
+app.route('/api/1/variables/<variable_name_or_alias>')(variables.variable)
