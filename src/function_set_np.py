@@ -66,9 +66,9 @@ def si(l):
     return (l[1]*condition)
 
 def inverse(l):
-    denominateur_nul = (l[1] == 0)
-    denominateur = l[1] + denominateur_nul
-    return (l[0] / denominateur) * (1 - denominateur_nul)
+    denominateur_nul = (l[0] == 0)
+    denominateur = l[0] + denominateur_nul
+    return (1 / denominateur) * (1 - denominateur_nul)
 
 def maximum(l):
     accu = l[0]
@@ -103,7 +103,7 @@ functions_mapping = {
     'operator:=': egal,
     'ternary': ternaire,
     'si': si,
-    '/': inverse,
+    'inverse': inverse,
     'max': maximum,
     'min': minimum,
     'inf': plancher,
