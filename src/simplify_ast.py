@@ -162,8 +162,8 @@ def traversal(node):
             elif sign == '/':
                 args[i+1] = {
                     'nodetype': 'call',
-                    'name': '/',
-                    'args': [{'nodetype': 'float', 'value': 1.}, args[i+1]]
+                    'name': 'inverse',
+                    'args': [args[i+1]]
                 }
             else:
                 raise ValueError('Unknown sign : %s'%sign)
