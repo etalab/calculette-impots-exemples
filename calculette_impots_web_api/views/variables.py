@@ -8,7 +8,7 @@ from werkzeug.exceptions import NotFound
 from .. import state
 
 
-def variable_controller(variable_name):
+def variable(variable_name_or_alias):
     variable_definition = state.variables_definitions.definition_by_variable_name.get(variable_name)
     if variable_definition is None:
         raise NotFound('The variable {!r} is not defined.'.format(variable_name))
@@ -29,5 +29,5 @@ def variable_controller(variable_name):
         ))
 
 
-def variables_controller():
+def variables():
     return jsonify({'variables_definitions': state.variables_definitions.definition_by_variable_name})

@@ -36,10 +36,10 @@ app = make_json_app('calculette_impots_web_api')
 
 
 @app.route('/')
-def index_controller():
+def index():
     return jsonify({'message': 'Hello, this is "calculette-impots-web-api". Hint: use /api/1/calculate endpoint.'})
 
-app.route('/api/1/calculate')(calculate.calculate_controller)
+app.route('/api/1/calculate')(calculate.calculate)
 
-app.route('/api/1/variables')(variables.variables_controller)
-app.route('/api/1/variables/<variable_name>')(variables.variable_controller)
+app.route('/api/1/variables')(variables.variables)
+app.route('/api/1/variables/<variable_name>')(variables.variable)

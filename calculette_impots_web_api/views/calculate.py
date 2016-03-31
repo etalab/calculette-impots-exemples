@@ -12,7 +12,7 @@ from werkzeug.exceptions import BadRequest
 from .. import state
 
 
-def calculate_controller():
+def calculate():
     # Validate inputs
 
     calculees_arg = request.args.getlist('calculee') or None
