@@ -46,7 +46,7 @@
       {{ variable.name }} / alias {{ variable.alias }}
       <input name="{{ variable.name }}" required type="number" value="{{ saisie_variable_input_by_name.get(variable.name, 0) }}">
       <input type="submit" value="OK">
-    {% elif variable.type == 'variable_calculee' and not variable.base %}
+    {% elif variable.type == 'variable_calculee' and variable.formula_source_html %}
       <p style="overflow-x: auto; white-space: nowrap;">
         <code style="white-space: pre;">{{ variable.formula_source_html|safe }}</code>
         <br>

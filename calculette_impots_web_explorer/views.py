@@ -45,8 +45,10 @@ def build_variable(variable_name_or_alias, saisie_variable_value_by_name):
     if variable_reverse_dependencies:
         variable['reverse_dependencies'] = variable_reverse_dependencies
 
-    if variable_definition.get('type') == 'variable_calculee' and not variable_definition.get('base'):
-        ((startline, _), (endline, _)) = variable_definition['formula_linecol'] or \
+    if variable_definition.get('type') == 'variable_calculee' and (
+            'formula_linecol' in variable_definition or 'pour_formula_linecol' in variable_definition
+            ):
+        ((startline, _), (endline, _)) = variable_definition.get('formula_linecol') or \
             variable_definition['pour_formula_linecol']
         source_file_path = os.path.join(app.config['M_SOURCE_FILES_DIR_PATH'], variable_definition['source_file_name'])
         with open(source_file_path) as source_file:
