@@ -1,7 +1,14 @@
 {% extends "layout.html" %}
 {% block title %}Web Explorer – Calculette Impôts{% endblock %}
 {% block content %}
-  <h1>Web Explorer – Calculette Impôts</h1>
+  <p>
+    Les noms des variables sont ceux qu'on trouve dans le code source de la calculette impôts en langage M.
+    Exemples : TSHALLOV, IRN, etc.
+  </p>
+  <p>
+    Les variables saisies ont toutes un "alias" qui correspond souvent au nom de la case qu'on trouve dans la
+    déclaration d'impôts.
+  </p>
   <p>
     Accéder aux
     <a href="#saisie-variables">variables saisies</a>,
@@ -12,9 +19,9 @@
   <ul>
     {% for variable_name, variable in saisie_variables.items() %}
       <li>
-        <a href="{{ url_for('variable', variable_name=variable_name) }}">{{variable_name}}</a>
+        <a href="{{ url_for('variable', variable_name_or_alias=variable_name) }}">{{ variable_name }}</a>
+        / alias <a href="{{ url_for('variable', variable_name_or_alias=variable.alias) }}">{{ variable.alias }}</a>
         – {{ variable.description or 'Pas de description' }}
-        – alias {{ variable.alias }}
       </li>
     {% endfor %}
   </ul>
@@ -22,7 +29,7 @@
   <ul>
     {% for variable_name, variable in calculee_variables.items() %}
       <li>
-        <a href="{{ url_for('variable', variable_name=variable_name) }}">{{variable_name}}</a>
+        <a href="{{ url_for('variable', variable_name_or_alias=variable_name) }}">{{variable_name}}</a>
         – {{ variable.description or 'Pas de description' }}
       </li>
     {% endfor %}

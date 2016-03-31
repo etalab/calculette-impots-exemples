@@ -4,25 +4,37 @@ from collections import OrderedDict
 import os
 
 from calculette_impots.generated import formulas  # , verifs
-from flask import render_template, request
+from flask import render_template, request, url_for
 from toolz import concatv, unique, valfilter
 from werkzeug.exceptions import NotFound
+from werkzeug.routing import RequestRedirect
 
 from . import state
 
 
-def build_variable(variable_name):
+def build_variable(variable_name_or_alias):
     from .application import app  # Import here to avoid cyclic modules import.
 
-    variable_definition = state.variables_definitions.definition_by_variable_name.get(variable_name)
+    variable_definition = state.variables_definitions.definition_by_variable_name.get(variable_name_or_alias)
     if variable_definition is None:
-        if variable_name not in state.constants:
+        alias_variables_definitions = list(filter(
+            lambda definition: definition.get('alias') == variable_name_or_alias,
+            state.variables_definitions.definition_by_variable_name.values(),
+            ))
+        if alias_variables_definitions:
+            raise RequestRedirect(url_for(
+                'variable',
+                variable_name_or_alias=alias_variables_definitions[0]['name'],
+                **request.args
+                ))
+    if variable_definition is None:
+        if variable_name_or_alias not in state.constants:
             return None
-        variable_definition = dict(name=variable_name)
+        variable_definition = dict(name=variable_name_or_alias)
 
-    variable_dependencies = sorted(state.dependencies_by_formula_name.get(variable_name) or [])
+    variable_dependencies = sorted(state.dependencies_by_formula_name.get(variable_name_or_alias) or [])
     variable_reverse_dependencies = sorted(valfilter(
-        lambda val: variable_name in val,
+        lambda val: variable_name_or_alias in val,
         state.dependencies_by_formula_name,
         ).keys())
 
@@ -57,12 +69,14 @@ def build_variable(variable_name):
     return variable
 
 
-def variable(variable_name):
+def variable(variable_name_or_alias):
     # Process controller arguments.
 
-    variable = build_variable(variable_name)
+    variable = build_variable(variable_name_or_alias)
     if variable is None:
-        raise NotFound(u"La variable {!r} n'est pas définie.".format(variable_name))
+        raise NotFound(u"La variable {!r} n'est pas définie.".format(variable_name_or_alias))
+
+    variable_name = variable['name']
 
     input_error_by_name = {}
 

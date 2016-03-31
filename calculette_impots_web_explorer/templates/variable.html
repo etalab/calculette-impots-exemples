@@ -1,5 +1,13 @@
 {% extends "layout.html" %}
 
+{% macro render_variable_title(variable) -%}
+  {{ render_variable_type(variable.name, variable.type, variable.base) }}
+  {{ variable.name }}
+  {% if variable.type == 'variable_saisie' %}
+    / alias {{ variable.alias }}
+  {% endif %}
+{%- endmacro %}
+
 {% macro render_variable_type(name, type, base=False) -%}
   {% if type == 'variable_saisie' %}
     Variable saisie
@@ -15,9 +23,14 @@
   {% endif %}
 {%- endmacro %}
 
-{% block title %}Variable {{ variable.name }}{% endblock %}
+{% block title %}{{ render_variable_title(variable) }}{% endblock %}
 
 {% block content %}
+  <a href="/">Retour à l'accueil</a>
+  <h2>{{ render_variable_title(variable) }}</h2>
+  <p>
+    {{ variable.description or 'Pas de description' }}
+  </p>
   {% if input_error_by_name %}
     <h3>Erreurs</h3>
     <ul>
@@ -28,45 +41,22 @@
       {% endfor %}
     </ul>
   {% endif %}
-  <h1>{{ render_variable_type(variable.name, variable.type, variable.base) }} {{ variable.name }}</h1>
-  <p>
-    {{ variable.description or 'Pas de description' }}
-    {% if variable.alias %}
-      – alias {{ variable.alias }}
-    {% endif %}
-  </p>
-  {% if variable.formula_source_html %}
-    <pre>{{ variable.formula_source_html|safe }}</pre>
-    <a href="{{ variable.source_file_git_url }}" target="_blank" rel="external">source</a>
-  {% endif %}
-  <form action="{{ url_for('variable', historique=history_str, variable_name=variable.name) }}" method="get">
-    {% if saisie_variable_input_by_name %}
-      <h3>Variables saisies</h3>
-      <ul>
-      {% for name, value in saisie_variable_input_by_name.items() %}
-        {% if name != variable.name %}
-          <li>
-            {% set saisie_definition = state.variables_definitions.definition_by_variable_name[name] %}
-            <a href="{{ url_for('variable', variable_name=name, historique=history_str,
-                **saisie_variable_input_by_name) }}">{{ name }}</a>
-            alias {{ saisie_definition.alias }}
-            <input name="{{ name }}" required type="number" value="{{ value }}">
-            <input type="submit" value="OK">
-            – {{ saisie_definition.description or 'Pas de description' }}
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {{ variable.linecol }}
+  <form action="{{ url_for('variable', historique=history_str, variable_name_or_alias=variable.name) }}" method="get">
     {% if variable.type == 'variable_saisie' %}
-      {{ variable.name }}
-      <input name="{{ variable.name }}" required type="number" value="{{ saisie_variable_input_by_name.get(variable.name, '') }}">
+      {{ variable.name }} / alias {{ variable.alias }}
+      <input name="{{ variable.name }}" required type="number" value="{{ saisie_variable_input_by_name.get(variable.name, 0) }}">
       <input type="submit" value="OK">
     {% elif variable.type == 'variable_calculee' and not variable.base %}
-      <p>Résultat du calcul : {{ variable_value_by_name.get(variable.name, '') }}</p>
+      <p>
+        <code>{{ variable.formula_source_html|safe }}</code>
+        <br>
+        <code>{{ variable.name }} = {{ variable_value_by_name.get(variable.name, 0) }}</code>
+      </p>
+      <p>
+        <a href="{{ variable.source_file_git_url }}" target="_blank" rel="external">fichier source</a>
+      </p>
     {% else %}
-      <p>Valeur : {{ variable_value_by_name.get(variable.name, '') }}</p>
+      <p>Valeur : {{ variable_value_by_name.get(variable.name, 0) }}</p>
     {% endif %}
     {% if variable.dependencies %}
       <h3>Variables utilisées par {{ variable.name }}</h3>
@@ -74,7 +64,7 @@
         {% for source_name in variable.dependencies %}
           <li>
             {{ render_variable_type(source_name, state.variables_definitions.get_type(source_name)) }}
-            <a href="{{ url_for('variable', variable_name=source_name, historique=history_str,
+            <a href="{{ url_for('variable', variable_name_or_alias=source_name, historique=history_str,
                 **saisie_variable_input_by_name) }}">{{ source_name }}</a>
             {{ variable_value_by_name.get(source_name) }}
             {% set source_description = state.variables_definitions.get_description(source_name) %}
@@ -83,12 +73,32 @@
         {% endfor %}
       </ul>
     {% endif %}
+    {% if saisie_variable_input_by_name %}
+      <h3>Variables saisies</h3>
+      <ul>
+        {% for name, value in saisie_variable_input_by_name.items() %}
+          {% if name != variable.name %}
+            <li>
+              {% set saisie_definition = state.variables_definitions.definition_by_variable_name[name] %}
+              <a href="{{ url_for('variable', variable_name_or_alias=name, historique=history_str,
+                  **saisie_variable_input_by_name) }}">{{ name }}</a>
+              / alias
+              <a href="{{ url_for('variable', variable_name_or_alias=saisie_definition.alias, historique=history_str,
+                  **saisie_variable_input_by_name) }}">{{ saisie_definition.alias }}</a>
+              <input name="{{ name }}" required type="number" value="{{ value }}">
+              <input type="submit" value="OK">
+              – {{ saisie_definition.description or 'Pas de description' }}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
     {% if variable.reverse_dependencies %}
       <h3>Formules utilisant {{ variable.name }}</h3>
       <ul>
         {% for target_name in variable.reverse_dependencies %}
           <li>
-            <a href="{{ url_for('variable', variable_name=target_name, historique=history_str,
+            <a href="{{ url_for('variable', variable_name_or_alias=target_name, historique=history_str,
                 **saisie_variable_input_by_name) }}">{{ target_name }}</a>
             {{ variable_value_by_name.get(target_name) }}
             {% set target_description = state.variables_definitions.get_description(target_name) %}
@@ -101,12 +111,12 @@
   </form>
   {% if history|length > 1 %}
     <h3>Historique</h3>
-    <a href="{{ url_for('variable', variable_name=variable.name, **saisie_variable_input_by_name) }}">Effacer</a>
+    <a href="{{ url_for('variable', variable_name_or_alias=variable.name, **saisie_variable_input_by_name) }}">Effacer</a>
     <ul>
       {% for history_name in history %}
         {% if history_name != variable.name %}
           <li>
-            <a href="{{ url_for('variable', variable_name=history_name, historique=history_str,
+            <a href="{{ url_for('variable', variable_name_or_alias=history_name, historique=history_str,
                 **saisie_variable_input_by_name) }}">{{ history_name }}</a>
             {{ variable_value_by_name.get(history_name) }}
           </li>
@@ -119,7 +129,7 @@
   <script type="text/javascript">
     DiscourseEmbed = {
       discourseUrl: 'https://forum.openfisca.fr/',
-      discourseEmbedUrl: '{{ url_for('variable', _external = True, variable_name=variable.name) }}'
+      discourseEmbedUrl: '{{ url_for('variable', _external = True, variable_name_or_alias=variable.name) }}'
     };
     (function() {
       var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;

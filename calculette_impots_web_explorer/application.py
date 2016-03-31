@@ -11,4 +11,4 @@ app = Flask('calculette_impots_web_explorer', instance_relative_config=True)
 app.config.from_pyfile('config.py')
 
 app.route('/')(views.variables)
-app.route('/<variable_name>')(views.variable)
+app.route('/<variable_name_or_alias>')(views.variable)
