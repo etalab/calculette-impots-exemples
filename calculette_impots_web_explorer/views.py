@@ -63,14 +63,6 @@ def build_variable(variable_name_or_alias, saisie_variable_value_by_name):
                     u'<abbr title="{}">{}</abbr>'.format(dependency_description, dependency_name),
                     )
         variable['formula_source_html'] = formula_source_html
-        evaluated_formula_source_html = formula_source
-        for dependency_name in sorted_variable_dependencies:
-            dependency_value = saisie_variable_value_by_name.get(dependency_name, 0)
-            evaluated_formula_source_html = evaluated_formula_source_html.replace(
-                dependency_name,
-                str(dependency_value).rjust(len(dependency_name)),
-                )
-        variable['evaluated_formula_source_html'] = evaluated_formula_source_html
         variable['source_file_git_url'] = '{}{}#L{}-{}'.format(
             app.config['SOURCE_FILE_GIT_BASE_URL'],
             variable_definition['source_file_name'],
