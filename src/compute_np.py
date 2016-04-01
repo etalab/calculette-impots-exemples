@@ -61,17 +61,24 @@ def get_value(name, input_values, computed_values):
     raise Exception('Unknown variable category.')
 
 
-def prepare(alias_values):
-    input_values = {alias2name[alias]: value for alias, value in alias_values.items()}
+def prepare(list_alias_values):
 
-    input_values_complete = {}
-    for name in inputs_light:
-        if (name in input_values):
-            input_values_complete[name] = input_values[name]
-        else:
-            input_values_complete[name] = 0.
+    list_input_values_complete = []
 
-    return input_values_complete
+    for alias_values in list_alias_values:
+
+        input_values = {alias2name[alias]: value for alias, value in alias_values.items()}
+
+        input_values_complete = {}
+        for name in inputs_light:
+            if name in input_values:
+                input_values_complete[name] = input_values[name]
+            else:
+                input_values_complete[name] = 0
+
+        list_input_values_complete.append(input_values_complete)
+
+    return list_input_values_complete
 
 
 def compute_formula(node, input_values, computed_values):
