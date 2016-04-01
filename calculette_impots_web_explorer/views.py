@@ -59,7 +59,7 @@ def build_variable(variable_name_or_alias, saisie_variable_value_by_name):
             if dependency_description is not None:
                 formula_source_html = formula_source_html.replace(
                     dependency_name,
-                    '<abbr title="{}">{}</abbr>'.format(dependency_description, dependency_name),
+                    u'<abbr title="{}">{}</abbr>'.format(dependency_description, dependency_name),
                     )
         variable['formula_source_html'] = formula_source_html
         evaluated_formula_source_html = formula_source
