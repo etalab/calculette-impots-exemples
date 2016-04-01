@@ -8,11 +8,11 @@ import configparser
 import numpy as np
 import os
 
-from function_set_np import functions_mapping
+from function_set_np import get_functions_mapping
 
 config = configparser.ConfigParser()
 config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
-n = int(config['numpy']['n'])
+# n = int(config['numpy']['n'])
 
 with open('../json/computing_order.json', 'r') as f:
     computing_order = json.load(f)
@@ -39,6 +39,9 @@ with open('../json/input_variables.json', 'r') as f:
 alias2name = {i['alias']: i['name'] for i in input_variables}
 
 def get_value(name, input_values, computed_values):
+
+    n = len(input_values)
+
     if name in formulas_light:
         return computed_values[name]*np.ones(n)
 
@@ -46,7 +49,11 @@ def get_value(name, input_values, computed_values):
         return constants_light[name]*np.ones(n)
 
     if name in inputs_light:
-        return input_values[name]*np.ones(n)
+        r = np.zeros(n)
+        for i in range(0,n-1):
+            r[i]=input_values[i][name]
+        return r
+        #return input_values[name]*np.ones(n)
 
     if name in unknowns_light:
         return np.zeros(n)
@@ -68,6 +75,9 @@ def prepare(alias_values):
 
 
 def compute_formula(node, input_values, computed_values):
+
+    n = len(input_values)
+
     nodetype = node['nodetype']
 
     if nodetype == 'symbol':
@@ -77,12 +87,12 @@ def compute_formula(node, input_values, computed_values):
 
     if nodetype == 'float':
         value = node['value']
-        return value*np.ones(n)
+        return value*np.ones(len(input_values))
 
     if nodetype == 'call':
         name = node['name']
         args = [compute_formula(child, input_values, computed_values) for child in node['args']]
-        function = functions_mapping[name]
+        function = get_functions_mapping(n)[name]
         value = function(args)
         return value
 
