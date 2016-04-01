@@ -54,7 +54,8 @@ def build_variable(variable_name_or_alias, saisie_variable_value_by_name):
         with open(source_file_path) as source_file:
             formula_source = ''.join(source_file.readlines()[startline - 1:endline]).strip()
         formula_source_html = formula_source
-        for dependency_name in variable_dependencies:
+        sorted_variable_dependencies = sorted(variable_dependencies, key = lambda value: -len(value))
+        for dependency_name in sorted_variable_dependencies:
             dependency_description = state.variables_definitions.get_description(dependency_name)
             if dependency_description is not None:
                 formula_source_html = formula_source_html.replace(
@@ -63,7 +64,7 @@ def build_variable(variable_name_or_alias, saisie_variable_value_by_name):
                     )
         variable['formula_source_html'] = formula_source_html
         evaluated_formula_source_html = formula_source
-        for dependency_name in variable_dependencies:
+        for dependency_name in sorted_variable_dependencies:
             dependency_value = saisie_variable_value_by_name.get(dependency_name, 0)
             evaluated_formula_source_html = evaluated_formula_source_html.replace(
                 dependency_name,
