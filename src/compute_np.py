@@ -12,7 +12,6 @@ from function_set_np import get_functions_mapping
 
 config = configparser.ConfigParser()
 config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
-# n = int(config['numpy']['n'])
 
 with open('../json/computing_order.json', 'r') as f:
     computing_order = json.load(f)
@@ -40,7 +39,7 @@ alias2name = {i['alias']: i['name'] for i in input_variables}
 
 def get_value(name, input_values, computed_values):
 
-    n = len(input_values)
+    n = len(input_values['TSHALLOV'])
 
     if name in formulas_light:
         return computed_values[name]*np.ones(n)
@@ -49,10 +48,7 @@ def get_value(name, input_values, computed_values):
         return constants_light[name]*np.ones(n)
 
     if name in inputs_light:
-        r = np.zeros(n)
-        for i in range(0,n-1):
-            r[i]=input_values[i][name]
-        return r
+        return input_values[name]
         #return input_values[name]*np.ones(n)
 
     if name in unknowns_light:
@@ -63,27 +59,24 @@ def get_value(name, input_values, computed_values):
 
 def prepare(list_alias_values):
 
-    list_input_values_complete = []
+    n = len(list_alias_values)
 
-    for alias_values in list_alias_values:
+    dict_input_values_complete = {name: np.zeros(n) for name in inputs_light}
+
+    for idx, alias_values in enumerate(list_alias_values):
 
         input_values = {alias2name[alias]: value for alias, value in alias_values.items()}
 
-        input_values_complete = {}
         for name in inputs_light:
             if name in input_values:
-                input_values_complete[name] = input_values[name]
-            else:
-                input_values_complete[name] = 0
+                dict_input_values_complete[name][idx] = input_values[name]
 
-        list_input_values_complete.append(input_values_complete)
-
-    return list_input_values_complete
+    return dict_input_values_complete
 
 
 def compute_formula(node, input_values, computed_values):
 
-    n = len(input_values)
+    n = len(input_values['TSHALLOV'])
 
     nodetype = node['nodetype']
 
@@ -94,7 +87,7 @@ def compute_formula(node, input_values, computed_values):
 
     if nodetype == 'float':
         value = node['value']
-        return value*np.ones(len(input_values))
+        return value*np.ones(len(input_values['TSHALLOV']))
 
     if nodetype == 'call':
         name = node['name']
