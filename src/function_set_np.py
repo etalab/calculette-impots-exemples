@@ -55,6 +55,15 @@ def get_functions_mapping(n):
     def superieur_ou_egal(l):
         return (l[0] >= l[1]).astype(np.float)
 
+    def inferieur_ou_egal(l):
+        return (l[0] <= l[1]).astype(np.float)
+
+    def superieur_strictement(l):
+        return (l[0] > l[1]).astype(np.float)
+
+    def inferieur_strictement(l):
+        return (l[0] < l[1]).astype(np.float)
+
     def egal(l):
         return (l[0] == l[1]).astype(np.float)
 
@@ -100,6 +109,9 @@ def get_functions_mapping(n):
         'positif_ou_nul': positif_ou_nul,
         'null': nul,
         'operator:>=': superieur_ou_egal,
+        'operator:<=': inferieur_ou_egal,
+        'operator:>': superieur_strictement,
+        'operator:<': inferieur_strictement,
         'operator:=': egal,
         'ternary': ternaire,
         'si': si,
