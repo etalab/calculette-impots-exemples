@@ -52,6 +52,10 @@ var functionsMapping = {
         return -tabValeurs[0];
     },
 
+    'unary:-':function negateTab(tabValeurs){
+        return -tabValeurs[0];
+    },
+
     'positif': function positifTab(tabValeurs){
         return (tabValeurs[0]>0) | 0;
     },
