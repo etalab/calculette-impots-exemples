@@ -9,6 +9,7 @@ $(function(){
             var element = submittedForm[index];
             inputValues[element.name] = parseFloat(element.value) || 0;
         }
-        console.log(compute(inputValues));
+        //console.log(compute(inputValues));
+        $('#resultat').html('<h4>Votre impot: '+compute(inputValues)+'</h4>');
     });
 });
