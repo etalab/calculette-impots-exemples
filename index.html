@@ -6,6 +6,7 @@
    <script src='js/jquery.min.js'></script>
    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'></script>
    <script src='js/compute.js'></script>
+   <script src='js/form.js'></script>
    <title>Calculette impot javascript</title>
    </head>
    <body>
@@ -14,7 +15,7 @@
 
     <div class="container">
 
-        <form>
+        <form id='declaration-impot'>
 
         <label for='tshalloc'>Salaire - Declarant Votre conjoint</label>
         <input type='number' name='TSHALLOC' id='tshalloc'>
@@ -28,6 +29,8 @@
 
         <label for='V_OAX'>Date de mariage JJMMAAAA</label>
         <input type='text' name='V_OAX' id='v_oax'>
+
+        <input type='submit' id='submit-form' value='Soumettre formulaire'>
 
         </form>
 
