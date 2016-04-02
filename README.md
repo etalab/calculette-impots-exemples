@@ -17,8 +17,8 @@ Pour lancer le serveur
 $ python -m SimpleHTTPServer
 
 ```
-
 Ouvrez votre navigateur à localhost:8000
+Entrez vos informations - soumettez le calcul
 
 ## Membres projet
 
