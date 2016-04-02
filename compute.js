@@ -102,7 +102,24 @@ var functionsMapping = {
 
 function compute(inputValues){
   var values = {};
-}
+
+  for(item in constants){
+    values[item] = constants[value];
+  }
+
+  for(item in inputValues){
+    values[item]= inputValues[item];
+  }
+
+  for(i in computingOrder){
+    var name = computingOrder[i];
+    formula = formulas[name];
+    values[name] = computeFormula(formula,values);
+  }
+
+  return values.IRN;
+
+ }
 
 function computeFormula(node, values){
 
