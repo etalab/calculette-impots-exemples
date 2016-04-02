@@ -22,6 +22,7 @@ functions_mapping = {
     '+': sum,
     '*': product,
     '-': (lambda x: -x[0]),
+    'unary:-': (lambda x: -x[0]),
     'positif': (lambda x: float(x[0]>0)),
     'positif_ou_nul': (lambda x: float(x[0]>=0)),
     'null': (lambda x: float(x[0]==0)),
