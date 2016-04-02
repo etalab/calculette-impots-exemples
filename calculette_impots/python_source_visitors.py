@@ -228,6 +228,10 @@ def visit_ternary_operator(node):
         )
 
 
+def visit_unary(node):
+    return '-{}'.format(visit_node(node['expression'], parenthesised=True))
+
+
 def visit_variable_const(node):
     return '{} = {}'.format(node['name'], node['value'])
 
