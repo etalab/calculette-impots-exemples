@@ -11,32 +11,45 @@
    </head>
    <body>
 
-    <h1>Calculette impots</h1>
 
     <div class="container">
 
-        <form id='declaration-impot'>
+        <h1>Calculette impots</h1>
 
-        <label for='tshalloc'>Salaire - Declarant Votre conjoint</label>
-        <input type='number' name='TSHALLOC' id='tshalloc'>
+        <div class="row">
 
-        <label for='tshallov'>Salaire - Declarant Vous</label>
-        <input type='number' name='TSHALLOV' id='tshallov'>
+        <div class='col-md-6 col-xs-6'>
 
+            <form id='declaration-impot'>
 
-        <label for='v_0am'>Situation famille Mariée</label>
-        <input type='checkbox' name='V_0AM' id='v_0am' value='1'>
+                <div class='form-group' >
+                    <label for='tshalloc'>Salaire - Declarant Votre conjoint</label>
+                    <input type='number' name='TSHALLOC' id='tshalloc' class='form-control'>
+                </div>
 
-        <label for='v_0ax'>Date de mariage JJMMAAAA</label>
-        <input type='text' name='V_0AX' id='v_0ax'>
+                <div class='form-group' >
+                    <label for='tshallov'>Salaire - Declarant Vous</label>
+                    <input type='number' name='TSHALLOV' id='tshallov' class='form-control'>
+                </div>
 
-        <input type='submit' id='submit-form' value='Soumettre formulaire'>
+                <div class='form-group' >
+                    <label for='v_0am'>Situation famille Mariée</label>
+                    <input type='checkbox' name='V_0AM' id='v_0am' value='1' class='form-group'>
+                </div>
 
-        </form>
+                <div class='form-group' >
+                    <label for='v_0ax'>Date de mariage JJMMAAAA</label>
+                    <input type='text' name='V_0AX' id='v_0ax' class='form-control'>
+                </div>
+
+                <input type='submit' id='submit-form' value='Soumettre formulaire' class='form-control'>
+
+            </form>
+
+            </div>
+        </div>
 
     </div>
 
    </body>
-
-
 </html>
