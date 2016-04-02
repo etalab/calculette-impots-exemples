@@ -26,6 +26,8 @@ functions_mapping = {
     'positif_ou_nul': (lambda x: float(x[0]>=0)),
     'null': (lambda x: float(x[0]==0)),
     'operator:>=': (lambda x: float(x[0]>=x[1])),
+    'operator:>': (lambda x: float(x[0]>x[1])),
+    'operator:<': (lambda x: float(x[0]<x[1])),
     'operator:=': (lambda x: float(x[0]==x[1])),
     'ternary': (lambda x: x[1] if x[0] else x[2]),
     'si': (lambda x: x[1] if x[0] else 0.),

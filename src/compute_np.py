@@ -96,4 +96,5 @@ def compute(input_values):
         formula = formulas_light[variable]
         computed_values[variable] = compute_formula(formula, input_values, computed_values)
 
-    return computed_values['IRN']
+    important_vars = ['NBPT', 'REVKIRE', 'BCSG', 'BCSG', 'BRDS', 'IBM23', 'TXMOYIMP', 'NAPTIR', 'IINET', 'RRRBG', 'RNI', 'IDRS3', 'IAVIM']
+    return {var: computed_values[var] for var in important_vars}
