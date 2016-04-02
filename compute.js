@@ -121,8 +121,8 @@ function computeFormula(node, values){
         var name = node.name;
         var func = functionsMapping[name];
         var args = [];
-        for(child in node.args){
-           args.push(computeFormula(child,values));
+        for(i in node.args){
+           args.push(computeFormula(node.args[i],values));
         }
         return func(args);
     }
