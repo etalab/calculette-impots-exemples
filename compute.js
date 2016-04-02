@@ -46,10 +46,64 @@ var functionsMapping = {
 
     'inverse': function inverseTab(tabValeurs){
         return (tabValeurs[0] !== 0 ? 1/tabValeurs[0] : 0 );
+    },
+
+    'max': function maxTab(tabValeurs){
+        return tabValeurs.reduce(function(a,b){
+            return Math.max(a,b);
+        });
+    },
+
+    'min': function minTab(tabValeurs){
+        return tabValeurs.reduce(function(a,b){
+            return Math.min(a,b);
+        });
+    },
+
+    'inf': function infTab(tabValeurs){
+        return Math.floor(tabValeurs[0]);
+    },
+
+    'arr': function arrTab(tabValeurs){
+        return Math.round(tabValeurs[0]);
+    },
+
+    'abs': function absTab(tabValeurs){
+        return Math.abs(tabValeurs[0]);
+    },
+
+    'present': function presentTab(tabValeurs){
+        return (tabValeurs[0] !== 0);
+    },
+
+    'boolean:ou': function ouTab(tabValeurs){
+        return tabValeurs.reduce(function(a,b){
+           return (a || b) | 0;
+        });
+    },
+
+    'boolean:et': function etTab(tabValeurs){
+        return tabValeurs.reduce(function(a,b){
+           return (a && b) | 0;
+        });
+    },
+
+    'dans': function dansTab(tabValeurs){
+
+        for(var i=1; i< tabValeurs.length; i++ ){
+            if(tabValeurs[0] === tabValeurs[i]){
+                return 1;
+            }
+        };
+        return 0;
     }
 
-
 };
+
+function compute(inputValues){
+  var values = {};
+}
+
 function computeFormula(node, values){
 
     if(node.nodetype ==='symbol'){
