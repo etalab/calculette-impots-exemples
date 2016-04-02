@@ -1,0 +1,277 @@
+#!/opt/local/bin/perl
+
+# -*- cperl -*-
+
+use strict ;
+
+use utf8;
+use Getopt::Std ;
+use XML::LibXML ;
+use JSON ;
+
+
+my $xsi = "http://www.w3.org/2001/XMLSchema-instance" ;
+my $xsiSl = "http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/mlns/1.0/graphml.xsd http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd" ;
+
+my $outputNodes = join ('|',
+												('IRN', 'NBPT', 'REVKIRE', 'BCSG', 'BRDS', 'IBM23', 'TXMOYIMP',
+												 'NAPTIR', 'IINET', 'RRRBG', 'RNI', 'IDRS3', 'IAVIM')) ;
+
+my $inputNodes = join ('|',
+											 ('V_0AC',
+												'V_0AM',
+												'V_0AD',
+												'V_0AV',
+												'V_0AO',
+												'V_0CF',
+												'TSHALLOV',
+												'ALLOV',
+												'PRBRV',
+												'TSHALLOC',
+												'ALLOC',
+												'PRBRC',
+												'RCMABD',
+												'RCMHAB',
+												'COD2CK',
+												'DCSG',
+												'RDDOUP')) ;
+
+
+sub addNode	{
+	my $doc = shift ;
+	my $graph = shift ;
+	my $n = shift ;
+
+	my $node = $doc->createElement('node') ;
+	$node->setAttribute('id', $n) ;
+	my $dataNode = $doc->createElement('data') ;
+	$dataNode->setAttribute('key', 'label') ;
+	$dataNode->appendTextNode($n) ;
+	$node->appendChild($dataNode) ;
+
+	my ($r, $g, $b) = (0, 0, 0) ;
+	if ($n =~ m/^($outputNodes)$/ ) {
+		$r = 255 ;
+	} elsif ($n =~ m/^($inputNodes)$/ ) {
+		$g = 255 ;
+	}
+	if(($r+$g+$b) > 0) {
+		my $dataNode = $doc->createElement('data') ;
+		$dataNode->setAttribute('key', 'r') ;
+		$dataNode->appendTextNode($r) ;
+		$node->appendChild($dataNode) ;
+		# green
+		$dataNode = $doc->createElement('data') ;
+		$dataNode->setAttribute('key', 'g') ;
+		$dataNode->appendTextNode($g) ;
+		$node->appendChild($dataNode) ;
+		# blue
+		$dataNode = $doc->createElement('data') ;
+		$dataNode->setAttribute('key', 'b') ;
+		$dataNode->appendTextNode($b) ;
+		$node->appendChild($dataNode) ;
+
+		$dataNode = $doc->createElement('data') ;
+		$dataNode->setAttribute('key', 'd6') ;
+		$dataNode->appendTextNode(sprintf("#%02X%02X%02X", $r, $g, $b)) ;
+		$node->appendChild($dataNode) ;
+	}
+	$graph->appendChild($node) ;
+}
+
+
+my @graphMLAttributes =
+	(
+	 {
+		'attr.name' => 'Graph Label',
+		'attr.type' => 'string',
+		'for' => 'graph',
+		'id' => 'graphLabel'
+	},
+	 {
+		'attr.name' => 'Node Label',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'label'
+	},
+	 {
+		'attr.name' => 'Edge Label',
+		'attr.type' => 'string',
+		'for' => 'edge',
+		'id' => 'label'
+	},
+	 {
+		'attr.name' => 'Description',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'd5'
+	},
+	 {
+		'attr.name' => 'Aplpication Domaine',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'domaine'
+	},
+	 {
+		'attr.name' => 'Application Sous-Domaine',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'sousDomaine'
+	},
+	 {
+		'attr.name' => 'Application nb utilisateurs',
+		'attr.type' => 'int',
+		'for' => 'node',
+		'id' => 'nbUtilisateurs'
+	},
+	 {
+		'attr.name' => 'Application nb pt fonctions',
+		'attr.type' => 'int',
+		'for' => 'node',
+		'id' => 'pointFonction'
+	},
+	 {
+		'attr.name' => 'Module description',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'description'
+	},
+	 {
+		'attr.name' => 'Module type architecture',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'typeArchitecture'
+	},
+	 {
+		'attr.name' => 'Module filiere technologique',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'lfiliereTechnologique'
+	},
+	 {
+		'attr.name' => 'Module zone securite',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'zoneSecurite'
+	},
+	 {
+		'attr.name' => 'Color',
+		'attr.type' => 'string',
+		'for' => 'node',
+		'id' => 'd6'
+	},
+	 {
+		'attr.name' => 'Description',
+		'attr.type' => 'string',
+		'for' => 'edge',
+		'id' => 'd8'
+	},
+	 {
+		'attr.name' => 'r',
+		'attr.type' => 'int',
+		'for' => 'node',
+		'id' => 'r'
+	},
+	 {
+		'attr.name' => 'g',
+		'attr.type' => 'int',
+		'for' => 'node',
+		'id' => 'g'
+	},
+	 {
+		'attr.name' => 'b',
+		'attr.type' => 'int',
+		'for' => 'node',
+		'id' => 'b'
+	},
+	 {
+		'attr.name' => 'weight',
+		'attr.type' => 'double',
+		'for' => 'edge',
+		'id' => 'weight'
+	},
+	 {
+		'attr.name' => 'Edge ID',
+		'attr.type' => 'string',
+		'for' => 'edge',
+		'id' => 'edgeid'
+	},
+	 {
+		'for' => 'edge',
+		'id' => 'edgeGraphique',
+		'yfiles.type' => 'edgegraphics',
+	},
+	 {
+		'for' => 'node',
+		'id' => 'nodeGraphique',
+		'yfiles.type' => 'nodegraphics',
+	},
+ ) ;
+
+my $doc = XML::LibXML::Document->new('1.0', 'UTF-8') ;
+my $graphMLNode = $doc->createElement('graphml') ;
+$graphMLNode->setNamespace("http://graphml.graphdrawing.org/xmlns") ;
+$graphMLNode->setNamespace($xsi, 'xsi', 0) ;
+$graphMLNode->setAttributeNS($xsi, 'xsi:schemaLocation', $xsiSl) ;
+$graphMLNode->setNamespace("http://www.yworks.com/xml/graphml", "y", 0) ;
+$doc->setDocumentElement($graphMLNode) ;
+
+foreach my $h (@graphMLAttributes) {
+	my $key = $doc->createElement('key') ;
+	my $k ;
+	my $v ;
+	while(($k, $v) = each %{$h}) {
+		$key->setAttribute($k, $v) ;
+	}
+	$graphMLNode->appendChild($key) ;
+}
+
+my $graph = $doc->createElement('graph') ;
+$graph->setAttribute('id', 'principal') ;
+$graph->setAttribute('edgeDefault', 'directed') ;
+{
+	my $label = $doc->createElement('data') ;
+	$label->setAttribute('key', 'graphLabel') ;
+	$label->appendTextNode('Principal') ;
+	$graph->appendChild($label) ;
+}
+$graphMLNode->appendChild($graph) ;
+
+open (FD, '<nodes.json') or die "Fichier nodes.json : $!" ;
+my $jsonStr ;
+{
+	local $| ;
+	$| = 1 ;
+	$jsonStr = <FD> ;
+}
+close FD ;
+
+my $jsonDecoded = decode_json $jsonStr ;
+
+
+my %dict = %{$jsonDecoded} ;
+
+	
+foreach my $n (keys %dict) {
+	addNode($doc, $graph, $n) ;
+}
+
+foreach my $n (keys %dict) {
+	foreach my $l (@{$dict{$n}}) {
+		if(not exists $dict{$l}) {
+			addNode($doc, $graph, $l) ;
+		}
+		my $node = $doc->createElement('edge') ;
+		$node->setAttribute('source', $n) ;
+		$node->setAttribute('target', $l) ;
+		$node->setAttribute('label', $n."|".$l) ;
+		$node->setAttribute('id', $n."|".$l) ;
+
+	$graph->appendChild($node) ;
+		
+	}
+}
+
+open (OUT, '>nodes.graphml') or die "Fichier nodes.graphml : $!" ;
+print OUT $doc->toString ;
+close OUT ;
