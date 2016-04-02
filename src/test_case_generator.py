@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import scipy.stats
 
 def gen(n):
 
@@ -34,7 +35,7 @@ def gen(n):
         # Enfants majeurs ou mariés: 0DJ (int) 5% moyenne: 1
 
         if (rv[i,3] < 0.05):
-            case['0CF'] = int(np.round(echantillonnage(1)))
+            case['0DJ'] = int(np.round(echantillonnage(1)))
 
         # Déclarants (fonction situation maritale)
         # salaires : 1AJ, 1BJ 57% moyenne: 24000, 20300
@@ -95,4 +96,6 @@ def echantillonnage(value):
     ### Several statistics dirtributions possible
     #return np.random.randint(0, 2*value)
     #return np.absolute(np.random.normal(value, value/2))
-    return np.round(np.random.chisquare(value))
+    #return np.round(np.random.chisquare(value))
+    #return np.round(np.random.logistic(value, value/10))
+    return np.round(scipy.stats.fisk.rvs(4, loc=0, scale=value))
