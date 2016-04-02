@@ -75,7 +75,7 @@ def gen(n):
         # Revenus fonciers imposables 4BA 7% moy : 12500
 
         if (rv[i,9] < 0.07):
-            case['2CK'] = int(echantillonnage(12500))
+            case['4BA'] = int(echantillonnage(12500))
 
         # CSG déductible 6DE 11% moy: 717
 
@@ -92,4 +92,7 @@ def gen(n):
     return cases
 
 def echantillonnage(value):
-    return np.random.random_integers(0, 2*value)
+    ### Several statistics dirtributions possible
+    #return np.random.randint(0, 2*value)
+    #return np.absolute(np.random.normal(value, value/2))
+    return np.round(np.random.chisquare(value))
