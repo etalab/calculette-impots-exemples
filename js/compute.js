@@ -1,3 +1,4 @@
+// Logger helper
 function log(something,choice){
   if(typeof(choice)==='undefined'){
     return console.log(something);
@@ -9,6 +10,28 @@ function log(something,choice){
     return console.log(something);
   }
 };
+
+var constants = null;
+var formulas = null;
+var computingOrder = null;
+
+$.getJSON('json/constants_light.json',function(response){
+   constants = response;
+   return ;
+});
+
+$.getJSON('json/formulas_light.json',function(response){
+   formulas = response;
+   return ;
+});
+
+$.getJSON('json/computing_order.json',function(response){
+   computingOrder = response;
+   return ;
+});
+
+
+
 
 var functionsMapping = {
 
