@@ -5,13 +5,10 @@ $(function(){
         event.preventDefault();
         submittedForm = $('#declaration-impot').serializeArray();
 
-        console.dir(submittedForm);
-
-        for(element in submittedForm){
-            log(element);
-            inputValues[element.name] = parseFloat(element.value);
+        for(index in submittedForm){
+            var element = submittedForm[index];
+            inputValues[element.name] = parseFloat(element.value) || 0;
         }
         console.log(compute(inputValues));
-
     });
 });

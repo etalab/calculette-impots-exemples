@@ -56,7 +56,7 @@ var functionsMapping = {
     },
 
     'positif_ou_nul': function positifOuNulTab(tabValeurs){
-        return (tabValeurs[0]<0) | 0;
+        return (tabValeurs[0]>=0) | 0;
     },
 
     'null': function nullTab(tabValeurs){
@@ -139,7 +139,7 @@ function compute(inputValues){
   var values = {};
 
   for(item in constants){
-    values[item] = constants[value];
+    values[item] = constants[item];
   }
 
   for(item in inputValues){
@@ -149,7 +149,8 @@ function compute(inputValues){
   for(i in computingOrder){
     var name = computingOrder[i];
     formula = formulas[name];
-    values[name] = computeFormula(formula,values);
+    var value = computeFormula(formula,values);
+    values[name] = value;
   }
 
   return values.IRN;
