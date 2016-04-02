@@ -11,6 +11,15 @@ Pouvoir faire fonctionner le code M sur navigateur.
 
 ## Utilisation
 
+Pour lancer le serveur
+
+```
+$ python -m SimpleHTTPServer
+
+```
+
+Ouvrez votre navigateur à localhost:8000
+
 ## Membres projet
 
 - Emmanuel
