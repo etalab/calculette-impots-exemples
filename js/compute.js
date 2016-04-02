@@ -1,3 +1,15 @@
+function log(something,choice){
+  if(typeof(choice)==='undefined'){
+    return console.log(something);
+  }else if(choice === 1 ){
+    return console.error(something);
+  }else if(choice === 2){
+    return console.warn(something);
+  }else{
+    return console.log(something);
+  }
+};
+
 var functionsMapping = {
 
     '+':function sumTab(tabValeurs){
@@ -10,7 +22,7 @@ var functionsMapping = {
         return tabValeurs.reduce(function(a,b){
             return a*b;
         });
-    }
+    },
 
     '-':function negateTab(tabValeurs){
         return -tabValeurs[0];
