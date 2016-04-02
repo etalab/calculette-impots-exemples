@@ -15,6 +15,7 @@ var constants = null;
 var formulas = null;
 var computingOrder = null;
 
+// Get Abstract syntax tree
 $.getJSON('json/constants_light.json',function(response){
    constants = response;
    return ;
@@ -32,7 +33,7 @@ $.getJSON('json/computing_order.json',function(response){
 
 
 
-
+// Computations rules
 var functionsMapping = {
 
     '+':function sumTab(tabValeurs){
@@ -135,6 +136,7 @@ var functionsMapping = {
 
 };
 
+// Computation
 function compute(inputValues){
   var values = {};
 
@@ -157,6 +159,7 @@ function compute(inputValues){
 
  }
 
+ // Apply computation formulas
 function computeFormula(node, values){
 
     if(node.nodetype ==='symbol'){
