@@ -8,7 +8,7 @@ def product(l):
 
 def boolean_or(l):
     for e in l:
-        if l:
+        if e:
             return 1.
     return 0.
 
