@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 <html>
    <head>
+   <meta charset='utf-8'>
+   <link rel="stylesheet" type='text/css' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
    <script src='js/jquery.min.js'></script>
+   <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'></script>
    <script src='js/compute.js'></script>
+   <title>Calculette impot javascript</title>
    </head>
    <body>
-    <h1>Hello world</h1>
+
+    <h1>Calculette impots</h1>
+
+    <div class="container">
+
+        <form>
+
+        <label for='tshalloc'>Salaire - Declarant Votre conjoint</label>
+        <input type='number' name='TSHALLOC' id='tshalloc'>
+
+        <label for='tshallov'>Salaire - Declarant Vous</label>
+        <input type='number' name='TSHALLOV' id='tshallov'>
+
+
+        <label for='V_OAM'>Situation famille Mariée</label>
+        <input type='checkbox' name='V_OAM' id='v_oam' value='1'>
+
+        <label for='V_OAX'>Date de mariage JJMMAAAA</label>
+        <input type='text' name='V_OAX' id='v_oax'>
+
+        </form>
+
+    </div>
 
    </body>
 
