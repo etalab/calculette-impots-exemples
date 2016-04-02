@@ -68,12 +68,20 @@ var functionsMapping = {
         return (tabValeurs[0] === 0) | 0;
     },
 
+    'operator:>': function supTab(tabValeurs){
+        return (tabValeurs[0] > tabValeurs[1] ) | 0;
+    },
+
     'operator:>=': function supOuEgalTab(tabValeurs){
         return (tabValeurs[0] >= tabValeurs[1] ) | 0;
     },
 
     'operator:=': function operatorEgalTab(tabValeurs){
         return (tabValeurs[0] === tabValeurs[1] ) | 0;
+    },
+
+    'operator:<': function infTab(tabValeurs){
+        return (tabValeurs[0] < tabValeurs[1] ) | 0;
     },
 
     'ternary': function ternaryTab(tabValeurs){
@@ -159,7 +167,7 @@ function compute(inputValues){
     values[name] = value;
   }
 
-  return values.IRN;
+  return values;
 
  }
 

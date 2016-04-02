@@ -9,7 +9,12 @@ $(function(){
             var element = submittedForm[index];
             inputValues[element.name] = parseFloat(element.value) || 0;
         }
-        //console.log(compute(inputValues));
-        $('#resultat').html('<h4>Votre impot: '+compute(inputValues)+'</h4>');
+        var values = compute(inputValues);
+        if (values.NAPT >= 0) {
+          $('#resultat').html('<h4>Somme à restituer: '+values.IREST+'</h4>');
+        }
+        else {
+          $('#resultat').html('<h4>Votre impot: '+values.IRN+'</h4>');
+        }
     });
 });
