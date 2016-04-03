@@ -54,6 +54,12 @@ def non_nul(l):
 def superieur_ou_egal(l):
     return (l[0] >= l[1]).astype(np.float)
 
+def superieur(l):
+    return (l[0] > l[1]).astype(np.float)
+
+def inferieur(l):
+    return (l[0] < l[1]).astype(np.float)
+
 def egal(l):
     return (l[0] == l[1]).astype(np.float)
 
@@ -96,10 +102,13 @@ functions_mapping = {
     '+': plus,
     '*': produit,
     '-': moins,
+    'unary:-': moins,
     'positif': positif,
     'positif_ou_nul': positif_ou_nul,
     'null': nul,
     'operator:>=': superieur_ou_egal,
+    'operator:>': superieur,
+    'operator:<': inferieur,
     'operator:=': egal,
     'ternary': ternaire,
     'si': si,

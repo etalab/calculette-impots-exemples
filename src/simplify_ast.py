@@ -217,6 +217,11 @@ def traversal(node):
         args += [{'nodetype': 'float', 'value': float(v)} for v in enum_values]
         return {'nodetype': 'call', 'name': 'dans', 'args': args}
 
+    if nodetype == 'unary':
+        arg = traversal(node['expression'])
+        name = 'unary:' + node['operator']
+        return {'nodetype': 'call', 'name': name, 'args':[arg]}
+
     raise ValueError('Unknown type %s : %s'%(nodetype, node))
 
 
