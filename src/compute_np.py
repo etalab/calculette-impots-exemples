@@ -49,7 +49,6 @@ def get_value(name, input_values, computed_values):
 
     if name in inputs_light:
         return input_values[name]
-        #return input_values[name]*np.ones(n)
 
     if name in unknowns_light:
         return np.zeros(n)
