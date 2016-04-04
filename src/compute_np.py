@@ -86,7 +86,7 @@ def compute_formula(node, input_values, computed_values):
 
     if nodetype == 'float':
         value = node['value']
-        return value*np.ones(len(input_values['TSHALLOV']))
+        return value*np.ones(n)
 
     if nodetype == 'call':
         name = node['name']
