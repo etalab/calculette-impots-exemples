@@ -1,4 +1,4 @@
-# Calculette Impôts traduite en JavaScripr
+# Calculette Impôts traduite en JavaScript
 
 ## Installation
 
