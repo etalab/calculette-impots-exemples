@@ -8,11 +8,10 @@ import configparser
 import numpy as np
 import os
 
-from function_set_np import functions_mapping
+from function_set_np import get_functions_mapping
 
 config = configparser.ConfigParser()
 config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
-n = int(config['numpy']['n'])
 
 with open('../json/computing_order.json', 'r') as f:
     computing_order = json.load(f)
@@ -39,6 +38,9 @@ with open('../json/input_variables.json', 'r') as f:
 alias2name = {i['alias']: i['name'] for i in input_variables}
 
 def get_value(name, input_values, computed_values):
+
+    n = len(input_values['TSHALLOV'])
+
     if name in formulas_light:
         return computed_values[name]*np.ones(n)
 
@@ -46,7 +48,7 @@ def get_value(name, input_values, computed_values):
         return constants_light[name]*np.ones(n)
 
     if name in inputs_light:
-        return input_values[name]*np.ones(n)
+        return input_values[name]
 
     if name in unknowns_light:
         return np.zeros(n)
@@ -54,20 +56,27 @@ def get_value(name, input_values, computed_values):
     raise Exception('Unknown variable category.')
 
 
-def prepare(alias_values):
-    input_values = {alias2name[alias]: value for alias, value in alias_values.items()}
+def prepare(list_alias_values):
 
-    input_values_complete = {}
-    for name in inputs_light:
-        if (name in input_values):
-            input_values_complete[name] = input_values[name]
-        else:
-            input_values_complete[name] = 0.
+    n = len(list_alias_values)
 
-    return input_values_complete
+    dict_input_values_complete = {name: np.zeros(n) for name in inputs_light}
+
+    for idx, alias_values in enumerate(list_alias_values):
+
+        input_values = {alias2name[alias]: value for alias, value in alias_values.items()}
+
+        for name in inputs_light:
+            if name in input_values:
+                dict_input_values_complete[name][idx] = input_values[name]
+
+    return dict_input_values_complete
 
 
 def compute_formula(node, input_values, computed_values):
+
+    n = len(input_values['TSHALLOV'])
+
     nodetype = node['nodetype']
 
     if nodetype == 'symbol':
@@ -82,7 +91,7 @@ def compute_formula(node, input_values, computed_values):
     if nodetype == 'call':
         name = node['name']
         args = [compute_formula(child, input_values, computed_values) for child in node['args']]
-        function = functions_mapping[name]
+        function = get_functions_mapping(n)[name]
         value = function(args)
         return value
 
