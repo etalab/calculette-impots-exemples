@@ -35,10 +35,10 @@ functions_mapping = {
     'inverse': (lambda x: 1/x[0] if x[0] else 0.),
     'max': max,
     'min': min,
-    'inf': (lambda x: math.floor(x[0])),
-    'arr': (lambda x: round(x[0])),
+    'inf': (lambda x: float(math.floor(x[0]))),
+    'arr': (lambda x: float(round(x[0]))),
     'abs': (lambda x: abs(x[0])),
-    'present': (lambda x: x[0] != 0.),
+    'present': (lambda x: float(x[0] != 0.)),
     'boolean:ou': boolean_or,
     'boolean:et': boolean_et,
     'dans': (lambda x: 1. if (x[0] in x[1:]) else 0.)
