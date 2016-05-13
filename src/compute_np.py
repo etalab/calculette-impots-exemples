@@ -56,7 +56,20 @@ def get_value(name, input_values, computed_values):
     raise Exception('Unknown variable category.')
 
 
-def prepare(list_alias_values):
+def prepare1(alias_values):
+    input_values = {alias2name[alias]: value for alias, value in alias_values.items()}
+
+    input_values_complete = {}
+    for name in inputs_light:
+        if (name in input_values):
+            input_values_complete[name] = input_values[name]
+        else:
+            input_values_complete[name] = 0.
+
+    return input_values_complete
+
+
+def prepare2(list_alias_values):
 
     n = len(list_alias_values)
 
