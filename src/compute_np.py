@@ -37,12 +37,9 @@ with open('../json/input_variables.json', 'r') as f:
 
 alias2name = {i['alias']: i['name'] for i in input_variables}
 
-def get_value(name, input_values, computed_values):
-
-    n = len(input_values['TSHALLOV'])
-
+def get_value(name, input_values, computed_values, n):
     if name in formulas_light:
-        return computed_values[name]*np.ones(n)
+        return computed_values[name]
 
     if name in constants_light:
         return constants_light[name]*np.ones(n)
@@ -56,15 +53,15 @@ def get_value(name, input_values, computed_values):
     raise Exception('Unknown variable category.')
 
 
-def prepare1(alias_values):
+def prepare1(alias_values, n):
     input_values = {alias2name[alias]: value for alias, value in alias_values.items()}
 
     input_values_complete = {}
     for name in inputs_light:
         if (name in input_values):
-            input_values_complete[name] = input_values[name]
+            input_values_complete[name] = input_values[name]*np.ones(n)
         else:
-            input_values_complete[name] = 0.
+            input_values_complete[name] = np.zeros(n)
 
     return input_values_complete
 
@@ -86,12 +83,12 @@ def prepare2(list_alias_values):
     return dict_input_values_complete
 
 
-def compute_formula(node, input_values, computed_values, functions_mapping):
+def compute_formula(node, input_values, computed_values, functions_mapping, n):
     nodetype = node['nodetype']
 
     if nodetype == 'symbol':
         name = node['name']
-        value = get_value(name, input_values, computed_values)
+        value = get_value(name, input_values, computed_values, n)
         return value
 
     if nodetype == 'float':
@@ -101,7 +98,7 @@ def compute_formula(node, input_values, computed_values, functions_mapping):
     if nodetype == 'call':
         name = node['name']
         args = [
-            compute_formula(child, input_values, computed_values, functions_mapping) 
+            compute_formula(child, input_values, computed_values, functions_mapping, n) 
             for child in node['args']
         ]
         function = functions_mapping[name]
@@ -118,7 +115,7 @@ def compute(input_values):
     computed_values = {}
     for variable in computing_order:
         formula = formulas_light[variable]
-        computed_values[variable] = compute_formula(formula, input_values, computed_values, functions_mapping)
+        computed_values[variable] = compute_formula(formula, input_values, computed_values, functions_mapping, n)
 
     important_vars = ['NBPT', 'REVKIRE', 'BCSG', 'BRDS', 'IBM23', 'TXMOYIMP', 'NAPTIR', 'IINET', 'RRRBG', 'RNI', 'IDRS3', 'IAVIM']
     return {var: computed_values[var] for var in important_vars}
