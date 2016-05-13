@@ -73,10 +73,7 @@ def prepare(list_alias_values):
     return dict_input_values_complete
 
 
-def compute_formula(node, input_values, computed_values):
-
-    n = len(input_values['TSHALLOV'])
-
+def compute_formula(node, input_values, computed_values, functions_mapping):
     nodetype = node['nodetype']
 
     if nodetype == 'symbol':
@@ -90,8 +87,11 @@ def compute_formula(node, input_values, computed_values):
 
     if nodetype == 'call':
         name = node['name']
-        args = [compute_formula(child, input_values, computed_values) for child in node['args']]
-        function = get_functions_mapping(n)[name]
+        args = [
+            compute_formula(child, input_values, computed_values, functions_mapping) 
+            for child in node['args']
+        ]
+        function = functions_mapping[name]
         value = function(args)
         return value
 
@@ -99,11 +99,13 @@ def compute_formula(node, input_values, computed_values):
 
 
 def compute(input_values):
-    computed_values = {}
+    n = len(next(iter(input_values.values())))
+    functions_mapping = get_functions_mapping(n)
 
+    computed_values = {}
     for variable in computing_order:
         formula = formulas_light[variable]
-        computed_values[variable] = compute_formula(formula, input_values, computed_values)
+        computed_values[variable] = compute_formula(formula, input_values, computed_values, functions_mapping)
 
-    important_vars = ['NBPT', 'REVKIRE', 'BCSG', 'BCSG', 'BRDS', 'IBM23', 'TXMOYIMP', 'NAPTIR', 'IINET', 'RRRBG', 'RNI', 'IDRS3', 'IAVIM']
+    important_vars = ['NBPT', 'REVKIRE', 'BCSG', 'BRDS', 'IBM23', 'TXMOYIMP', 'NAPTIR', 'IINET', 'RRRBG', 'RNI', 'IDRS3', 'IAVIM']
     return {var: computed_values[var] for var in important_vars}
