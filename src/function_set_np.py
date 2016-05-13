@@ -101,6 +101,7 @@ def get_functions_mapping(n):
         '+': plus,
         '*': produit,
         '-': moins,
+        'unary:-': moins,
         'positif': positif,
         'positif_ou_nul': positif_ou_nul,
         'null': nul,
