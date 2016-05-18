@@ -4,15 +4,14 @@ Compare with http://www3.finances.gouv.fr/calcul_impot/2015/index.htm
 """
 
 import json
-import configparser
 import numpy as np
 import os
 
-from function_set_np import functions_mapping
+import function_set_np
 
-config = configparser.ConfigParser()
-config.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
-n = int(config['numpy']['n'])
+n = 10
+functions_mapping = function_set_np.get_functions_mapping(n)
+
 
 with open('../json/computing_order_simple.json', 'r') as f:
     computing_order = json.load(f)
