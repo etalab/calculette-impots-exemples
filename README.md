@@ -1,5 +1,7 @@
 # Calculette Impôts traduite en JavaScript
 
+Démo : http://calc.ir.openfisca.fr/mtojs/
+
 ## Installation
 
 Il est nécessaire d'avoir au préalable installé le paquet [calculette-impots-vector-computing](https://git.framasoft.org/openfisca/calculette-impots-vector-computing).
