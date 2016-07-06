@@ -7,7 +7,6 @@ Transpile (roughly means convert) a JSON AST file to Python source code.
 """
 
 
-from operator import itemgetter
 from string import Template
 import argparse
 import copy
