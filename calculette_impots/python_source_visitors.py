@@ -4,7 +4,7 @@
 """
 Functions used to transpile the JSON AST nodes to Python source code.
 Each function `visit_abc` handles a node of type 'abc' and returns either a string or None.
-The dispatcher function (`visit_node`) is called from the script `json_ast_to_python.py`.
+The dispatcher function (`visit_node`) is called from the script `ast_to_python.py`.
 """
 
 

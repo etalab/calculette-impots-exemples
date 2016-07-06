@@ -189,7 +189,7 @@ Cette étape n'est utile que lorsque les fichiers JSON définissant l'AST change
 Ceux-ci sont dans le dépôt [m-language-parser](https://git.framasoft.org/openfisca/calculette-impots-m-language-parser).
 
 ```
-python3 calculette_impots/scripts/json_ast_to_python.py /path/to/calculette-impots-m-language-parser/json
+python3 calculette_impots/scripts/ast_to_python.py /path/to/calculette-impots-m-language-parser/json
 ```
 
 ## Qualité du code
