@@ -171,6 +171,7 @@ Un script permet d'appeler le simulateur en ligne :
 
 ```
 python3 calculette_impots/scripts/calculette_online.py
+python3 calculette_impots/scripts/calculette_online.py --saisie 1AJ=10000 1BJ=20000 0DA=1980 0DB=1970 0AX=05052014 pre_situation_famille=M
 ```
 
 Cependant il n'est pas peaufiné au point d'accepter des arguments sur la ligne de commande.

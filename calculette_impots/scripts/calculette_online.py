@@ -5,6 +5,9 @@
 Use finances.gouv.fr web simulator as an API to compute income taxes.
 
 Based on a script by Adrien Fabre in [OpenFisca-France](https://github.com/openfisca/openfisca-france).
+
+Example:
+python3 calculette_impots/scripts/calculette_online.py --saisie 1AJ=10000 1BJ=20000 0DA=1980 0DB=1970 0AX=05052014 pre_situation_famille=M
 """
 
 
