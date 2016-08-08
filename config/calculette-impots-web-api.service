@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenFisca Web Site
+
+[Service]
+ExecStart=/home/openfisca/virtualenvs/calculette_impots/bin/gunicorn calculette_impots_web_api.application:app --bind :5000
+User=openfisca
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
