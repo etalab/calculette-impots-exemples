@@ -2,7 +2,8 @@
 Description=OpenFisca Web Site
 
 [Service]
-ExecStart=/home/openfisca/virtualenvs/calculette_impots/bin/gunicorn calculette_impots_web_api.application:app --bind :5000
+Environment=CALCULETTE_IMPOTS_WEB_API_SETTINGS=/home/openfisca/production-configs/api.ir.openfisca.fr/config/calculette-impots-web-api.cfg
+ExecStart=/home/openfisca/virtualenvs/calculette_impots/bin/gunicorn calculette_impots_web_api.application:app --bind :5000 --log-file=- --error-logfile=- --capture-output
 User=openfisca
 Restart=always
 
