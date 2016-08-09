@@ -80,7 +80,7 @@ calculette-impots web-api
 Ou en exécutant directement le script :
 
 ``
-python3 calculette_impots_web_api/scripts/serve.py
+python calculette_impots_web_api/scripts/serve.py
 ``
 
 Puis ouvrir l'URL http://localhost:5000/.
