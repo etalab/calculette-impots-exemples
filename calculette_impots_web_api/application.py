@@ -40,15 +40,10 @@ def make_json_app(import_name, **kwargs):
 
 app = make_json_app('calculette_impots_web_api')
 
+
 @app.route('/')
 def index():
     return jsonify({'message': 'Hello, this is "calculette-impots-web-api". Hint: use /api/1/calculate endpoint.'})
-
-@app.route('/fail')
-def fail():
-    #assert 1==2, "1 is not equal to 2!!!"
-    boom
-
 
 app.route('/api/1/calculate')(calculate.calculate)
 
