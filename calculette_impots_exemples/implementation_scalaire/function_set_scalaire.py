@@ -1,27 +1,27 @@
 import math
 
-def product(l):
+def product(operands):
     accu = 1.
-    for e in l:
+    for e in operands:
         accu *= e
     return accu
 
-def boolean_or(l):
-    for e in l:
+def boolean_or(operands):
+    for e in operands:
         if e:
             return 1.
     return 0.
 
-def boolean_et(l):
-    for e in l:
-        if not l:
+def boolean_et(operands):
+    for e in operands:
+        if not operands:
             return 0.
     return 1.
 
 functions_mapping = {
-    '+': sum,
-    '*': product,
-    '-': (lambda x: -x[0]),
+    'sum': sum,
+    'product': product,
+    'negate': (lambda x: -x[0]),
     'unary:-': (lambda x: -x[0]),
     'positif': (lambda x: float(x[0]>0)),
     'positif_ou_nul': (lambda x: float(x[0]>=0)),
@@ -33,7 +33,7 @@ functions_mapping = {
     'operator:=': (lambda x: float(x[0]==x[1])),
     'ternary': (lambda x: x[1] if x[0] else x[2]),
     'si': (lambda x: x[1] if x[0] else 0.),
-    'inverse': (lambda x: 1/x[0] if x[0] else 0.),
+    'invert': (lambda x: 1/x[0] if x[0] else 0.),
     'max': max,
     'min': min,
     'inf': (lambda x: float(math.floor(x[0]))),

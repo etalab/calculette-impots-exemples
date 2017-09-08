@@ -1,7 +1,0 @@
-[main]
-
-ast_m_dir = /home/***/calculette-impots-m-language-parser/json/ast/
-
-[numpy]
-
-n = 100
