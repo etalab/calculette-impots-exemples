@@ -1,3 +1,5 @@
+*.egg-info
 src/config.ini
 *.pyc
 .ipynb_checkpoints
+.vscode
