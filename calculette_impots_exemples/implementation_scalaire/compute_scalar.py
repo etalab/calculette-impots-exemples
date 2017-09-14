@@ -1,8 +1,3 @@
-"""
-Compare with http://www3.finances.gouv.fr/calcul_impot/2015/index.htm
-
-"""
-
 import json
 
 from .function_set_scalaire import functions_mapping
