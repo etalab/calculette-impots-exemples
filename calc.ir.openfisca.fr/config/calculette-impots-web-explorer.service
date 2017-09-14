@@ -1,0 +1,11 @@
+[Unit]
+Description=OpenFisca Web Site
+
+[Service]
+Environment=CALCULETTE_IMPOTS_WEB_EXPLORER_SETTINGS=/home/openfisca/production-configs/calc.ir.openfisca.fr/config/calculette-impots-web-explorer.cfg
+ExecStart=/home/openfisca/virtualenvs/calculette_impots/bin/gunicorn calculette_impots_web_explorer.application:app --bind :5010
+User=openfisca
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
