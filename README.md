@@ -12,7 +12,7 @@ Ce repository contient plusieurs applications basées sur la calculatrice M de l
 
 ## Exécuter le code sur son poste
 
-Il est nécessaire d'installer la dépendance [`calculette-mpots-m-language-parser`](https://github.com/etalab/calculette-impots-m-language-parser).
+Il est nécessaire d'installer la dépendance [`calculette-impots-m-language-parser`](https://github.com/etalab/calculette-impots-m-language-parser).
 
 Ce paquet n'est pas publié sur le dépôt [PyPI](https://pypi.python.org/pypi) donc pour l'installer il faut passer par `git clone`. 
 ```
@@ -24,6 +24,8 @@ pip3 install --editable . --user
 > L'option `--user` sert sur les systèmes GNU/Linux.
 
 > Pour les utilisateurs expérimentés, il est préférable d'utiliser un environnement virtuel. Voir par exemples [pew](https://github.com/berdario/pew).
+
+Après le lancement du serveur jupyter notebook (exécuter la commande `jupyter notebook`), les notebook sont accessible par le navigateur, par exemple `http://localhost:8888/notebooks/notebooks/diachronie.ipynb`
 
 ## Calculs
 
