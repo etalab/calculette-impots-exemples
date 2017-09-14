@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}Web Explorer – Calculette Impôts{% endblock %}
+{% block content %}
+  <p>
+    Les noms des variables sont ceux qu'on trouve dans le code source de la calculette impôts en langage M.
+    Exemples : TSHALLOV, IRN, etc.
+  </p>
+  <p>
+    Les variables saisies ont toutes un "alias" qui correspond souvent au nom de la case qu'on trouve dans la
+    déclaration d'impôts.
+  </p>
+  <p>
+    Accéder aux
+    <a href="#saisie-variables">variables saisies</a>,
+    <a href="#calculee-variables">variables calculées</a>,
+    <a href="#examples">exemples de calculs</a>
+  </p>
+  <h2 id="saisie-variables">Variables saisies</h2>
+  <ul>
+    {% for variable_name, variable in saisie_variables.items() %}
+      <li>
+        <a href="{{ url_for('variable', variable_name_or_alias=variable_name) }}">{{ variable_name }}</a>
+        / alias <a href="{{ url_for('variable', variable_name_or_alias=variable.alias) }}">{{ variable.alias }}</a>
+        – {{ variable.description or 'Pas de description' }}
+      </li>
+    {% endfor %}
+  </ul>
+  <h2 id="calculee-variables">Variables calculées</h2>
+  <ul>
+    {% for variable_name, variable in calculee_variables.items() %}
+      <li>
+        <a href="{{ url_for('variable', variable_name_or_alias=variable_name) }}">{{variable_name}}</a>
+        – {{ variable.description or 'Pas de description' }}
+      </li>
+    {% endfor %}
+  </ul>
+  <h2 id="examples">Exemples de calculs</h2>
+  <ul>
+    <li><a href="/IRN?V_ANREV=2014&TSHALLOV=10000">célibataire sans enfants gagnant 10000€ par an</a></li>
+    <li><a href="/IRN?V_ANREV=2014&TSHALLOV=30000">célibataire sans enfants gagnant 30000€ par an</a></li>
+    <li><a href="/IRN?V_ANREV=2014&TSHALLOV=10000&TSHALLOC=20000&V_0AM=1&V_0AX=05051980">couple marié (date du mariage 05/05/1980) sans enfants dont le déclarant 1 gagne 10000€ par an et le déclarant 2 gagne 20000€ par an</a></li>
+  </ul>
+{% endblock %}

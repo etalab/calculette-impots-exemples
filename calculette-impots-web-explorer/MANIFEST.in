@@ -1,0 +1,2 @@
+recursive-include calculette_impots_web_explorer/templates *
+recursive-include calculette_impots_web_explorer/static *

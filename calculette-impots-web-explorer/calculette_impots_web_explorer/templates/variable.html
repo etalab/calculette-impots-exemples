@@ -1,0 +1,140 @@
+{% extends "layout.html" %}
+
+{% macro render_variable_title(variable) -%}
+  {{ render_variable_type(variable.name, variable.type, variable.base) }}
+  {{ variable.name }}
+  {% if variable.type == 'variable_saisie' %}
+    / alias {{ variable.alias }}
+  {% endif %}
+{%- endmacro %}
+
+{% macro render_variable_type(name, type, base=False) -%}
+  {% if type == 'variable_saisie' %}
+    Variable saisie
+  {% elif type == 'variable_calculee' %}
+    Variable calculée
+    {% if base %}
+      de base
+    {% endif %}
+  {% elif name in state.constants %}
+    Constante
+  {% else %}
+    Variable
+  {% endif %}
+{%- endmacro %}
+
+{% block title %}{{ render_variable_title(variable) }}{% endblock %}
+
+{% block content %}
+  <a href="/">Retour à l'accueil</a>
+  <h2>{{ render_variable_title(variable) }}</h2>
+  <p>
+    {{ variable.description or 'Pas de description' }}
+  </p>
+  {% if input_error_by_name %}
+    <h3>Erreurs</h3>
+    <ul>
+      {% for name, error in input_error_by_name.items() %}
+        <li>
+          {{ name }} : {{ error }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <form action="{{ url_for('variable', historique=history_str, variable_name_or_alias=variable.name) }}" method="get">
+    {% if variable.type == 'variable_saisie' %}
+      {{ variable.name }} / alias {{ variable.alias }}
+      <input name="{{ variable.name }}" required type="number" value="{{ saisie_variable_input_by_name.get(variable.name, 0) }}">
+      <input type="submit" value="OK">
+    {% elif variable.type == 'variable_calculee' and variable.formula_source_html %}
+      <p style="overflow-x: auto; white-space: nowrap;">
+        <code style="white-space: pre;">{{ variable.formula_source_html|safe }}</code>
+        <br>
+        <code>{{ variable.name }} = {{ variable_value_by_name.get(variable.name, 0) }}</code>
+      </p>
+      <p>
+        <a href="{{ variable.source_file_git_url }}" target="_blank" rel="external">fichier source</a>
+      </p>
+    {% else %}
+      <p>Valeur : {{ variable_value_by_name.get(variable.name, 0) }}</p>
+    {% endif %}
+    {% if variable.dependencies %}
+      <h3>Variables utilisées par {{ variable.name }}</h3>
+      <ul>
+        {% for source_name in variable.dependencies %}
+          <li>
+            {{ render_variable_type(source_name, state.variables_definitions.get_type(source_name)) }}
+            <a href="{{ url_for('variable', variable_name_or_alias=source_name, historique=history_str,
+                **saisie_variable_input_by_name) }}">{{ source_name }}</a>
+            {{ variable_value_by_name.get(source_name) }}
+            {% set source_description = state.variables_definitions.get_description(source_name) %}
+            – {{ source_description or 'Pas de description' }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% if saisie_variable_input_by_name %}
+      <h3>Variables saisies</h3>
+      <ul>
+        {% for name, value in saisie_variable_input_by_name.items() %}
+          {% if name != variable.name %}
+            <li>
+              {% set saisie_definition = state.variables_definitions.definition_by_variable_name[name] %}
+              <a href="{{ url_for('variable', variable_name_or_alias=name, historique=history_str,
+                  **saisie_variable_input_by_name) }}">{{ name }}</a>
+              / alias
+              <a href="{{ url_for('variable', variable_name_or_alias=saisie_definition.alias, historique=history_str,
+                  **saisie_variable_input_by_name) }}">{{ saisie_definition.alias }}</a>
+              <input name="{{ name }}" required type="number" value="{{ value }}">
+              <input type="submit" value="OK">
+              – {{ saisie_definition.description or 'Pas de description' }}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% if variable.reverse_dependencies %}
+      <h3>Formules utilisant {{ variable.name }}</h3>
+      <ul>
+        {% for target_name in variable.reverse_dependencies %}
+          <li>
+            <a href="{{ url_for('variable', variable_name_or_alias=target_name, historique=history_str,
+                **saisie_variable_input_by_name) }}">{{ target_name }}</a>
+            {{ variable_value_by_name.get(target_name) }}
+            {% set target_description = state.variables_definitions.get_description(target_name) %}
+            – {{ target_description or 'Pas de description' }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <input name="historique" type="hidden" value="{{ history_str }}">
+  </form>
+  {% if history|length > 1 %}
+    <h3>Historique</h3>
+    <a href="{{ url_for('variable', variable_name_or_alias=variable.name, **saisie_variable_input_by_name) }}">Effacer</a>
+    <ul>
+      {% for history_name in history %}
+        {% if history_name != variable.name %}
+          <li>
+            <a href="{{ url_for('variable', variable_name_or_alias=history_name, historique=history_str,
+                **saisie_variable_input_by_name) }}">{{ history_name }}</a>
+            {{ variable_value_by_name.get(history_name) }}
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <h3>Discussion sur le forum d'OpenFisca</h3>
+  <div id="discourse-comments"></div>
+  <script type="text/javascript">
+    DiscourseEmbed = {
+      discourseUrl: 'https://forum.openfisca.fr/',
+      discourseEmbedUrl: '{{ url_for('variable', _external = True, variable_name_or_alias=variable.name) }}'
+    };
+    (function() {
+      var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
+      d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+    })();
+  </script>
+{% endblock %}
